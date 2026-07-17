@@ -1,0 +1,14 @@
+[
+  {
+    "token": { "address": "0xUSDC", "symbol": "USDC", "decimals": "6", "type": "ERC-20" },
+    "value": "3120000000"
+  },
+  {
+    "token": { "address": "0xARB", "symbol": "ARB", "decimals": "18", "type": "ERC-20" },
+    "value": "1780000000000000000000"
+  },
+  {
+    "token": { "address": "0xSPAM", "symbol": "SPAM", "decimals": "18", "type": "ERC-20" },
+    "value": "0"
+  }
+]

@@ -1,0 +1,19 @@
+import { describe, it, expect } from 'vitest';
+import fixture from '../../tests/fixtures/blockscout-arbitrum.json';
+import { parseBlockscoutBalances, nativeBalance } from './parseBlockscout';
+
+describe('parseBlockscoutBalances', () => {
+  it('normalizes ERC-20 token balances and skips zero balances', () => {
+    const out = parseBlockscoutBalances(fixture, 'arbitrum');
+    expect(out.map((t) => t.symbol)).toEqual(['USDC', 'ARB']);
+    const usdc = out[0];
+    expect(usdc).toMatchObject({ chainId: 'arbitrum', contract: '0xusdc', decimals: 6, rawBalance: '3120000000' });
+  });
+});
+
+describe('nativeBalance', () => {
+  it('builds a native TokenBalance from a coin-balance value', () => {
+    const t = nativeBalance('1500000000000000000', 'ethereum', 'ETH');
+    expect(t).toEqual({ chainId: 'ethereum', contract: null, symbol: 'ETH', decimals: 18, rawBalance: '1500000000000000000' });
+  });
+});
