@@ -1,32 +1,37 @@
-# React + TypeScript + Vite
+# ◈ Coldview
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+[![CI](https://github.com/090TYPE/Coldview/actions/workflows/ci.yml/badge.svg)](https://github.com/090TYPE/Coldview/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Currently, two official plugins are available:
+A **private, read-only crypto portfolio dashboard**. Paste EVM wallet addresses and see one
+clean picture of your holdings — total value, allocation, 24h change, and a value-over-time
+chart. Everything runs in your browser: **your addresses never touch a server.**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Why it's different
 
-## React Compiler
+- 🔒 **Fully client-side.** Addresses and history live in your browser (localStorage +
+  IndexedDB). No accounts, no backend, nothing to leak.
+- ⚡ **Zero setup.** Works out of the box on keyless public data (Blockscout for balances,
+  DefiLlama for prices). Optionally paste your own free Alchemy key for richer data.
+- 🧾 **Multi-wallet, multi-chain.** Aggregates across Ethereum, Arbitrum, Base, Polygon and
+  Optimism.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack
 
-## Expanding the Oxlint configuration
+React 19 · TypeScript · Vite · Tailwind · Zustand · TanStack Query · Recharts.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Develop
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev      # http://localhost:5173
+npm test         # unit tests (Vitest)
+npm run e2e      # end-to-end (Playwright)
+npm run build    # static production build -> dist/
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Privacy
+
+Coldview makes read-only calls to public block explorers and price APIs to display balances.
+It never transmits your addresses to any Coldview-operated server (there isn't one). Your
+optional Alchemy key is stored only in your browser.
