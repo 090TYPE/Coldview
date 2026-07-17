@@ -9,6 +9,7 @@ export function ApiKeyControl({ value, onChange }: { value: string; onChange: (k
       </button>
       {open && (
         <input
+          type="password"
           className="ml-2 bg-panel border border-border rounded px-2 py-0.5 w-64 outline-none"
           placeholder="Alchemy API key (used when available; stored only in this browser)"
           value={value}

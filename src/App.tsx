@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAppStore } from './state/store';
 import { usePortfolio } from './state/usePortfolio';
 import { getSnapshots, type SnapshotPoint } from './data/snapshot';
+import { filterSeriesByPeriod } from './data/period';
 import { TopBar } from './components/TopBar';
 import { ChainFilter } from './components/ChainFilter';
 import { HeroPanel } from './components/HeroPanel';
@@ -24,16 +25,18 @@ export default function App() {
     return <div className="p-4 max-w-6xl mx-auto"><EmptyState onAdd={(a) => addWallet(a, 'Main')} /></div>;
   }
 
+  const chartSeries = filterSeriesByPeriod(series, period);
+
   return (
     <div className="p-4 max-w-6xl mx-auto">
       <TopBar wallets={wallets} onAdd={addWallet} onRemove={removeWallet} apiKey={byokKey} onApiKey={setApiKey} />
       <ChainFilter enabled={enabledChains} onToggle={toggleChain} />
 
-      {isError && <ErrorBanner message="Couldn't load some data. It'll retry automatically." />}
-
-      {isLoading || !data ? (
-        <LoadingSkeleton />
-      ) : (
+      {isLoading && <LoadingSkeleton />}
+      {isError && !isLoading && (
+        <ErrorBanner message="Couldn't load your portfolio right now — it'll retry automatically." />
+      )}
+      {data && !isLoading && !isError && (
         <>
           <div className="grid grid-cols-1 lg:grid-cols-[1.55fr_1fr] gap-3 mb-3">
             <HeroPanel
@@ -42,7 +45,7 @@ export default function App() {
               walletCount={wallets.length}
               period={period}
               onPeriod={setPeriod}
-              series={series}
+              series={chartSeries}
             />
             <AllocationPanel byToken={data.byToken} byChain={data.byChain} />
           </div>

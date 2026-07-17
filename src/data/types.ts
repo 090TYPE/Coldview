@@ -52,5 +52,12 @@ export function keyOf(chainId: ChainId, contract: string | null): TokenKey {
 }
 
 export function toAmount(rawBalance: string, decimals: number): number {
-  return Number(rawBalance) / 10 ** decimals;
+  const neg = rawBalance.startsWith('-');
+  const digits = (neg ? rawBalance.slice(1) : rawBalance).replace(/^0+(?=\d)/, '');
+  const padded = digits.padStart(decimals + 1, '0');
+  const cut = padded.length - decimals;
+  const intPart = padded.slice(0, cut);
+  const fracPart = decimals > 0 ? padded.slice(cut) : '';
+  const value = Number(fracPart ? `${intPart}.${fracPart}` : intPart);
+  return neg ? -value : value;
 }

@@ -3,7 +3,7 @@ import { fetchBalances } from '../data/balanceProvider';
 import { fetchPrices } from '../data/priceProvider';
 import { aggregatePortfolio } from '../data/aggregate';
 import { appendSnapshot } from '../data/snapshot';
-import type { ChainId, TokenBalance, PortfolioSnapshot } from '../data/types';
+import type { ChainId, TokenBalance, TokenKey, Price, PortfolioSnapshot } from '../data/types';
 import type { Wallet } from '../data/walletStore';
 
 async function loadPortfolio(wallets: Wallet[], chains: ChainId[]): Promise<PortfolioSnapshot> {
@@ -11,7 +11,12 @@ async function loadPortfolio(wallets: Wallet[], chains: ChainId[]): Promise<Port
   const results = await Promise.allSettled(pairs.map((p) => fetchBalances(p.address, p.chain)));
   const balances: TokenBalance[] = results.flatMap((r) => (r.status === 'fulfilled' ? r.value : []));
 
-  const prices = await fetchPrices(balances);
+  let prices: Record<TokenKey, Price> = {};
+  try {
+    prices = await fetchPrices(balances);
+  } catch {
+    prices = {};
+  }
   const snapshot = aggregatePortfolio(balances, prices, { minValueUsd: 0.01 });
 
   if (snapshot.totalValueUsd > 0) {

@@ -17,4 +17,11 @@ describe('toAmount', () => {
   it('handles 18 decimals', () => {
     expect(toAmount('2271000000000000000', 18)).toBeCloseTo(2.271, 9);
   });
+  it('keeps precision for large 18-decimal balances beyond Number.MAX_SAFE_INTEGER', () => {
+    // ~9,999,999,999.123456789012345678 tokens with 18 decimals.
+    // The raw integer (29 digits) exceeds what a double can represent exactly, so a
+    // naive `Number(rawBalance) / 10 ** decimals` rounds the integer first and loses
+    // precision (diverges from the true value by ~1.9e-6, i.e. beyond 6 decimal places).
+    expect(toAmount('9999999999123456789012345678', 18)).toBeCloseTo(9999999999.123457, 6);
+  });
 });
