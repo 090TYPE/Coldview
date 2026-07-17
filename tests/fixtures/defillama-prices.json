@@ -1,0 +1,7 @@
+{
+  "coins": {
+    "arbitrum:0xusdc": { "price": 1.0, "confidence": 0.99 },
+    "arbitrum:0xarb": { "price": 1.26, "confidence": 0.98 },
+    "coingecko:ethereum": { "price": 2473.0, "confidence": 0.99 }
+  }
+}
