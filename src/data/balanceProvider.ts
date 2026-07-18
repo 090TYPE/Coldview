@@ -1,10 +1,12 @@
 import { getChain } from '../config/chains';
 import { parseBlockscoutBalances, nativeBalance } from './parseBlockscout';
+import { fetchSolanaBalances } from './solanaProvider';
+import { fetchBitcoinBalance } from './bitcoinProvider';
 import type { ChainId, TokenBalance } from './types';
 
-export async function fetchBalances(address: string, chainId: ChainId): Promise<TokenBalance[]> {
+async function fetchEvmBalances(address: string, chainId: ChainId): Promise<TokenBalance[]> {
   const chain = getChain(chainId);
-  const base = chain.blockscoutBaseUrl;
+  const base = chain.blockscoutBaseUrl!;
 
   const [tokensRes, coinRes] = await Promise.all([
     fetch(`${base}/api/v2/addresses/${address}/token-balances`),
@@ -21,4 +23,16 @@ export async function fetchBalances(address: string, chainId: ChainId): Promise<
     }
   }
   return [...native, ...tokens];
+}
+
+export async function fetchBalances(address: string, chainId: ChainId): Promise<TokenBalance[]> {
+  const family = getChain(chainId).family;
+  switch (family) {
+    case 'solana':
+      return fetchSolanaBalances(address);
+    case 'bitcoin':
+      return fetchBitcoinBalance(address);
+    default:
+      return fetchEvmBalances(address, chainId);
+  }
 }

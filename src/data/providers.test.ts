@@ -32,3 +32,14 @@ describe('fetchPrices (DefiLlama)', () => {
     expect(prices[keyOf('arbitrum', '0xARB')].usd).toBe(1.26);
   });
 });
+
+describe('fetchBalances dispatch', () => {
+  it('routes a bitcoin chain to the esplora provider', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      ok: true,
+      json: async () => ({ chain_stats: { funded_txo_sum: 100000000, spent_txo_sum: 0 }, mempool_stats: { funded_txo_sum: 0, spent_txo_sum: 0 } }),
+    } as Response)));
+    const out = await fetchBalances('bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4', 'bitcoin');
+    expect(out[0].symbol).toBe('BTC');
+  });
+});
