@@ -35,7 +35,8 @@ export function aggregatePortfolio(
     const priceUsd = price ? price.usd : null;
     const valueUsd = priceUsd !== null ? amount * priceUsd : null;
     const change24hPct = price ? price.change24hPct : null;
-    holdings.push({ key: k, chainId: b.chainId, symbol: b.symbol, amount, priceUsd, valueUsd, change24hPct });
+    const symbol = b.symbol || price?.symbol || shortMint(b.contract);
+    holdings.push({ key: k, chainId: b.chainId, symbol, amount, priceUsd, valueUsd, change24hPct });
   }
 
   // 3. Filter dust / priceless below threshold, then sort by value desc.
@@ -69,4 +70,9 @@ function groupSlices(
   return [...sums.entries()]
     .map(([label, valueUsd]) => ({ label, valueUsd, pct: total > 0 ? (valueUsd / total) * 100 : 0 }))
     .sort((a, b) => b.valueUsd - a.valueUsd);
+}
+
+function shortMint(contract: string | null): string {
+  if (!contract) return '???';
+  return contract.length > 8 ? `${contract.slice(0, 4)}…${contract.slice(-4)}` : contract;
 }

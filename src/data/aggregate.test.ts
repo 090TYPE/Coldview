@@ -69,4 +69,20 @@ describe('aggregatePortfolio', () => {
     expect(snap.holdings.map((h) => h.symbol)).toEqual(['ETH']);
     expect(snap.totalValueUsd).toBeCloseTo(2000, 6);
   });
+
+  it('fills an empty token symbol from the price symbol, else a short mint', () => {
+    const mint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+    const noName = 'So1111111111111111111111111111111111111112';
+    const balances = [
+      bal({ chainId: 'solana', contract: mint, symbol: '', decimals: 6, rawBalance: '1000000' }),
+      bal({ chainId: 'solana', contract: noName, symbol: '', decimals: 0, rawBalance: '5' }),
+    ];
+    const snap = aggregatePortfolio(balances, prices({
+      [keyOf('solana', mint)]: { usd: 1, change24hPct: 0, symbol: 'USDC' },
+      [keyOf('solana', noName)]: { usd: 1, change24hPct: 0 },
+    }));
+    const bySym = Object.fromEntries(snap.holdings.map((h) => [h.key, h.symbol]));
+    expect(bySym[keyOf('solana', mint)]).toBe('USDC');
+    expect(bySym[keyOf('solana', noName)]).toBe('So11…1112');
+  });
 });
