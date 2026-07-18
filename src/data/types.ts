@@ -1,11 +1,18 @@
-export type ChainId = 'ethereum' | 'arbitrum' | 'base' | 'polygon' | 'optimism';
+import type { Family } from './family';
+
+export type ChainId =
+  | 'ethereum' | 'arbitrum' | 'base' | 'polygon' | 'optimism'
+  | 'solana' | 'bitcoin';
 
 export interface ChainInfo {
   id: ChainId;
   name: string;
   nativeSymbol: string;
-  blockscoutBaseUrl: string;
+  family: Family;
   color: string;
+  blockscoutBaseUrl?: string; // EVM only
+  rpcUrl?: string;            // Solana only
+  esploraBaseUrl?: string;    // Bitcoin only
 }
 
 export interface TokenBalance {
@@ -21,6 +28,7 @@ export type TokenKey = string; // `${chainId}:${contract-lowercased | 'native'}`
 export interface Price {
   usd: number;
   change24hPct: number;
+  symbol?: string;
 }
 
 export interface Holding {

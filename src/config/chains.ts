@@ -1,11 +1,13 @@
 import type { ChainId, ChainInfo } from '../data/types';
 
 export const CHAINS: ChainInfo[] = [
-  { id: 'ethereum', name: 'Ethereum', nativeSymbol: 'ETH', blockscoutBaseUrl: 'https://eth.blockscout.com', color: '#3aa0ff' },
-  { id: 'arbitrum', name: 'Arbitrum', nativeSymbol: 'ETH', blockscoutBaseUrl: 'https://arbitrum.blockscout.com', color: '#22e6a4' },
-  { id: 'base', name: 'Base', nativeSymbol: 'ETH', blockscoutBaseUrl: 'https://base.blockscout.com', color: '#5eead4' },
-  { id: 'polygon', name: 'Polygon', nativeSymbol: 'POL', blockscoutBaseUrl: 'https://polygon.blockscout.com', color: '#8a5cff' },
-  { id: 'optimism', name: 'Optimism', nativeSymbol: 'ETH', blockscoutBaseUrl: 'https://optimism.blockscout.com', color: '#ffb020' },
+  { id: 'ethereum', name: 'Ethereum', nativeSymbol: 'ETH', family: 'evm', color: '#3aa0ff', blockscoutBaseUrl: 'https://eth.blockscout.com' },
+  { id: 'arbitrum', name: 'Arbitrum', nativeSymbol: 'ETH', family: 'evm', color: '#22e6a4', blockscoutBaseUrl: 'https://arbitrum.blockscout.com' },
+  { id: 'base', name: 'Base', nativeSymbol: 'ETH', family: 'evm', color: '#5eead4', blockscoutBaseUrl: 'https://base.blockscout.com' },
+  { id: 'polygon', name: 'Polygon', nativeSymbol: 'POL', family: 'evm', color: '#8a5cff', blockscoutBaseUrl: 'https://polygon.blockscout.com' },
+  { id: 'optimism', name: 'Optimism', nativeSymbol: 'ETH', family: 'evm', color: '#ffb020', blockscoutBaseUrl: 'https://optimism.blockscout.com' },
+  { id: 'solana', name: 'Solana', nativeSymbol: 'SOL', family: 'solana', color: '#14f195', rpcUrl: 'https://solana-rpc.publicnode.com' },
+  { id: 'bitcoin', name: 'Bitcoin', nativeSymbol: 'BTC', family: 'bitcoin', color: '#f7931a', esploraBaseUrl: 'https://blockstream.info' },
 ];
 
 export function getChain(id: ChainId): ChainInfo {

@@ -2,18 +2,19 @@ import { describe, it, expect } from 'vitest';
 import { CHAINS, getChain } from './chains';
 
 describe('chain registry', () => {
-  it('includes the five Phase 1 chains', () => {
+  it('includes the five EVM chains plus Solana and Bitcoin', () => {
     expect(CHAINS.map((c) => c.id)).toEqual([
-      'ethereum', 'arbitrum', 'base', 'polygon', 'optimism',
+      'ethereum', 'arbitrum', 'base', 'polygon', 'optimism', 'solana', 'bitcoin',
     ]);
   });
-  it('every chain has a Blockscout base URL and native symbol', () => {
-    for (const c of CHAINS) {
-      expect(c.blockscoutBaseUrl).toMatch(/^https:\/\//);
-      expect(c.nativeSymbol.length).toBeGreaterThan(0);
-    }
+  it('tags each chain with a family', () => {
+    expect(getChain('ethereum').family).toBe('evm');
+    expect(getChain('solana').family).toBe('solana');
+    expect(getChain('bitcoin').family).toBe('bitcoin');
   });
-  it('getChain returns a chain by id', () => {
-    expect(getChain('base').name).toBe('Base');
+  it('EVM chains keep a Blockscout URL; Solana has an rpcUrl; Bitcoin has an esploraBaseUrl', () => {
+    expect(getChain('base').blockscoutBaseUrl).toMatch(/^https:\/\//);
+    expect(getChain('solana').rpcUrl).toMatch(/^https:\/\//);
+    expect(getChain('bitcoin').esploraBaseUrl).toMatch(/^https:\/\//);
   });
 });
