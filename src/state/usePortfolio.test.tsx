@@ -30,4 +30,24 @@ describe('usePortfolio', () => {
     await waitFor(() => expect(result.current.data?.totalValueUsd).toBeCloseTo(2, 6));
     expect(result.current.data?.holdings[0].symbol).toBe('ARB');
   });
+
+  it('does not query an EVM wallet on Solana (family-matched pairing)', async () => {
+    const fetchMock = vi.fn(async (url: string) => {
+      if (url.includes('/token-balances')) {
+        return { ok: true, json: async () => ([]) } as Response;
+      }
+      if (url.includes('coins.llama.fi')) {
+        return { ok: true, json: async () => ({ coins: {} }) } as Response;
+      }
+      return { ok: true, json: async () => ({ coin_balance: '0' }) } as Response;
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const wallets = [{ address: '0x' + 'a'.repeat(40), label: 'Main', family: 'evm' as const }];
+    const { result } = renderHook(() => usePortfolio(wallets, ['ethereum', 'solana']), { wrapper });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    const calledSolana = fetchMock.mock.calls.some(([u]) => String(u).includes('solana-rpc'));
+    expect(calledSolana).toBe(false);
+  });
 });
