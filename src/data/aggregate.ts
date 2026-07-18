@@ -22,6 +22,7 @@ export function aggregatePortfolio(
     const existing = merged.get(k);
     if (existing) {
       existing.rawBalance = (BigInt(existing.rawBalance) + BigInt(b.rawBalance)).toString();
+      if (!existing.iconUrl && b.iconUrl) existing.iconUrl = b.iconUrl;
     } else {
       merged.set(k, { ...b });
     }
@@ -36,7 +37,7 @@ export function aggregatePortfolio(
     const valueUsd = priceUsd !== null ? amount * priceUsd : null;
     const change24hPct = price ? price.change24hPct : null;
     const symbol = b.symbol || price?.symbol || shortMint(b.contract);
-    holdings.push({ key: k, chainId: b.chainId, symbol, amount, priceUsd, valueUsd, change24hPct });
+    holdings.push({ key: k, chainId: b.chainId, symbol, amount, priceUsd, valueUsd, change24hPct, iconUrl: b.iconUrl ?? null });
   }
 
   // 3. Filter dust / priceless below threshold, then sort by value desc.

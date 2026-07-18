@@ -1,4 +1,5 @@
 import { getChain } from '../config/chains';
+import { TokenIcon } from './TokenIcon';
 import type { Holding } from '../data/types';
 
 const usd = (n: number | null) =>
@@ -23,7 +24,12 @@ export function HoldingsTable({ holdings }: { holdings: Holding[] }) {
         <tbody>
           {holdings.map((h) => (
             <tr key={h.key}>
-              <td className="p-2.5 border-b border-[#0f171e] font-bold text-[#e6eef3]">{h.symbol}</td>
+              <td className="p-2.5 border-b border-[#0f171e] font-bold text-[#e6eef3]">
+                <div className="flex items-center gap-2">
+                  <TokenIcon iconUrl={h.iconUrl} symbol={h.symbol} />
+                  <span>{h.symbol}</span>
+                </div>
+              </td>
               <td className="p-2.5 border-b border-[#0f171e]">
                 <span className="text-[9px] px-1.5 py-0.5 rounded border border-border text-[#8ba0ad]">
                   {getChain(h.chainId).name}

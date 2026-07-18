@@ -8,7 +8,8 @@ describe('parseBlockscoutBalances', () => {
     // SPAM has no exchange_rate and ZERO has a zero balance -> both dropped.
     expect(out.map((t) => t.symbol)).toEqual(['USDC', 'ARB']);
     const usdc = out[0];
-    expect(usdc).toMatchObject({ chainId: 'arbitrum', contract: '0xusdc', decimals: 6, rawBalance: '3120000000' });
+    expect(usdc).toMatchObject({ chainId: 'arbitrum', contract: '0xusdc', decimals: 6, rawBalance: '3120000000', iconUrl: 'https://assets.example/usdc.png' });
+    expect(out[1].iconUrl).toBeNull(); // ARB has no icon_url -> null
   });
 });
 

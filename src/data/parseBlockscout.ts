@@ -8,6 +8,7 @@ interface BlockscoutTokenBalance {
     decimals: string | null;
     type: string;
     exchange_rate?: string | null;
+    icon_url?: string | null;
   };
   value: string;
 }
@@ -34,6 +35,7 @@ export function parseBlockscoutBalances(raw: unknown, chainId: ChainId): TokenBa
       symbol: item.token.symbol ?? '???',
       decimals,
       rawBalance: item.value,
+      iconUrl: item.token.icon_url ?? null,
     });
   }
   return out;

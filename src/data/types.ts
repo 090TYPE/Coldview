@@ -21,6 +21,7 @@ export interface TokenBalance {
   symbol: string;
   decimals: number;
   rawBalance: string; // integer string
+  iconUrl?: string | null;
 }
 
 export type TokenKey = string; // `${chainId}:${contract-lowercased | 'native'}`
@@ -39,6 +40,7 @@ export interface Holding {
   priceUsd: number | null;
   valueUsd: number | null;
   change24hPct: number | null;
+  iconUrl: string | null;
 }
 
 export interface AllocationSlice {

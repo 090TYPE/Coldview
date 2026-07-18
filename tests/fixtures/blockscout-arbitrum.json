@@ -1,6 +1,6 @@
 [
   {
-    "token": { "address_hash": "0xUSDC", "symbol": "USDC", "decimals": "6", "type": "ERC-20", "exchange_rate": "1.0" },
+    "token": { "address_hash": "0xUSDC", "symbol": "USDC", "decimals": "6", "type": "ERC-20", "exchange_rate": "1.0", "icon_url": "https://assets.example/usdc.png" },
     "value": "3120000000"
   },
   {
