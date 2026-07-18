@@ -7,17 +7,20 @@ import {
 } from '../data/walletStore';
 
 export type Period = '24h' | '7d' | '30d' | 'all';
+export type View = 'portfolio' | 'activity';
 
 interface AppState {
   wallets: Wallet[];
   enabledChains: ChainId[];
   period: Period;
   byokKey: string;
+  view: View;
   addWallet: (address: string, label: string) => void;
   removeWallet: (address: string) => void;
   toggleChain: (id: ChainId) => void;
   setPeriod: (p: Period) => void;
   setApiKey: (k: string) => void;
+  setView: (v: View) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -25,6 +28,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   enabledChains: CHAINS.map((c) => c.id),
   period: '30d',
   byokKey: loadApiKey(),
+  view: 'portfolio',
 
   addWallet: (address, label) => {
     const family = detectFamily(address);
@@ -54,4 +58,6 @@ export const useAppStore = create<AppState>((set, get) => ({
     saveApiKey(byokKey);
     set({ byokKey });
   },
+
+  setView: (view) => set({ view }),
 }));
