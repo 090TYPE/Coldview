@@ -1,0 +1,5 @@
+{
+  "address": "bc1qexample",
+  "chain_stats": { "funded_txo_sum": 150000000, "spent_txo_sum": 50000000 },
+  "mempool_stats": { "funded_txo_sum": 0, "spent_txo_sum": 0 }
+}
