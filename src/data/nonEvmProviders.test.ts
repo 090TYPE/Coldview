@@ -22,6 +22,18 @@ describe('fetchSolanaBalances', () => {
     expect(out.map((t) => t.symbol)).toEqual(['SOL', '']);
     expect(out.find((t) => t.contract)?.contract).toBe('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
   });
+
+  it('still returns SOL when the token-accounts sub-call fails', async () => {
+    vi.stubGlobal('fetch', vi.fn(async (_url: string, init?: RequestInit) => {
+      const body = JSON.parse((init?.body as string) ?? '{}');
+      if (body.method === 'getBalance') {
+        return { ok: true, json: async () => ({ result: { value: 2000000000 } }) } as Response;
+      }
+      return { ok: false, status: 429, json: async () => ({}) } as Response; // token call rate-limited
+    }));
+    const out = await fetchSolanaBalances('7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs');
+    expect(out.map((t) => t.symbol)).toEqual(['SOL']);
+  });
 });
 
 describe('fetchBitcoinBalance', () => {

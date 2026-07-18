@@ -16,13 +16,18 @@ async function rpc(url: string, method: string, params: unknown[]): Promise<any>
 
 export async function fetchSolanaBalances(address: string): Promise<TokenBalance[]> {
   const url = getChain('solana').rpcUrl!;
-  const [bal, tokens] = await Promise.all([
+  // Degrade each sub-call independently: a rate-limit on one must not discard the other.
+  const [balR, tokR] = await Promise.allSettled([
     rpc(url, 'getBalance', [address]),
     rpc(url, 'getTokenAccountsByOwner', [address, { programId: TOKEN_PROGRAM }, { encoding: 'jsonParsed' }]),
   ]);
   const out: TokenBalance[] = [];
-  const native = solanaNativeBalance(bal?.result?.value ?? 0);
-  if (native) out.push(native);
-  out.push(...parseSolanaTokenAccounts(tokens?.result?.value ?? []));
+  if (balR.status === 'fulfilled') {
+    const native = solanaNativeBalance(balR.value?.result?.value ?? 0);
+    if (native) out.push(native);
+  }
+  if (tokR.status === 'fulfilled') {
+    out.push(...parseSolanaTokenAccounts(tokR.value?.result?.value ?? []));
+  }
   return out;
 }

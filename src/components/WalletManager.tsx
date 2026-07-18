@@ -34,7 +34,7 @@ export function WalletManager({ wallets, onAdd, onRemove }: Props) {
       ))}
       {adding ? (
         <span className="flex gap-1">
-          <input className="bg-panel border border-border rounded px-2 py-0.5 w-56 outline-none" placeholder="0x… address" value={addr} onChange={(e) => setAddr(e.target.value)} />
+          <input className="bg-panel border border-border rounded px-2 py-0.5 w-56 outline-none" placeholder="EVM / Solana / Bitcoin address" value={addr} onChange={(e) => setAddr(e.target.value)} />
           <input className="bg-panel border border-border rounded px-2 py-0.5 w-20 outline-none" placeholder="label" value={label} onChange={(e) => setLabel(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submit()} />
           <button className="text-neon" onClick={submit}>save</button>
         </span>

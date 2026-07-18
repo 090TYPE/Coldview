@@ -8,7 +8,7 @@ export function EmptyState({ onAdd }: { onAdd: (address: string) => void }) {
 
   const submit = () => {
     if (!isValidAddress(value)) {
-      setError('Enter a valid address (0x + 40 hex characters).');
+      setError("That doesn't look like a valid address. Paste an EVM (0x…), Solana or Bitcoin address.");
       return;
     }
     setError('');
@@ -23,7 +23,7 @@ export function EmptyState({ onAdd }: { onAdd: (address: string) => void }) {
       <div className="flex gap-2">
         <input
           className="flex-1 bg-panel border border-border rounded-lg px-3 py-2 text-text outline-none focus:border-neon"
-          placeholder="0x… wallet address"
+          placeholder="0x, Solana or Bitcoin wallet address"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && submit()}
