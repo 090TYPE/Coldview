@@ -34,7 +34,7 @@ export default function App() {
       <ChainFilter enabled={enabledChains} onToggle={toggleChain} />
 
       {view === 'activity' ? (
-        <ActivityView wallets={wallets} enabledChains={enabledChains} byToken={data?.byToken ?? []} />
+        <ActivityView wallets={wallets} enabledChains={enabledChains} />
       ) : (
         <>
           {isLoading && <LoadingSkeleton />}

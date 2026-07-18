@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildActivity, computeFlows } from './activity';
+import { buildActivity, computeRecentFlows } from './activity';
 import { cacheKeyFor } from './historicalPrice';
 import type { Transfer } from './types';
 
@@ -20,22 +20,21 @@ describe('buildActivity', () => {
   });
 });
 
-describe('computeFlows', () => {
-  it('nets invested = in - out, excludes self-transfers and priceless rows, computes gain', () => {
+describe('computeRecentFlows', () => {
+  it('sums in/out per token, excludes self-transfers and priceless rows', () => {
     const rows = [
       { ...tf({ direction: 'in' }), usdAtTime: 1000 },
       { ...tf({ direction: 'out' }), usdAtTime: 400 },
-      { ...tf({ direction: 'in', counterparty: '0xmine' }), usdAtTime: 5000 },
-      { ...tf({ direction: 'in' }), usdAtTime: null },
+      { ...tf({ direction: 'in', counterparty: '0xmine' }), usdAtTime: 5000 }, // self-transfer, excluded
+      { ...tf({ direction: 'in' }), usdAtTime: null }, // priceless, excluded
     ];
-    const owned = new Set<string>(['0xmine']);
-    const current = new Map<string, number>([['ETH', 900]]);
-    const flows = computeFlows(rows, owned, current);
+    const flows = computeRecentFlows(rows, new Set<string>(['0xmine']));
     const eth = flows.perToken.find((r) => r.symbol === 'ETH')!;
-    expect(eth.investedUsd).toBeCloseTo(600, 6);
-    expect(eth.currentUsd).toBe(900);
-    expect(eth.gainUsd).toBeCloseTo(300, 6);
-    expect(flows.totalInvested).toBeCloseTo(600, 6);
-    expect(flows.totalGain).toBeCloseTo(300, 6);
+    expect(eth.inUsd).toBeCloseTo(1000, 6);
+    expect(eth.outUsd).toBeCloseTo(400, 6);
+    expect(eth.netUsd).toBeCloseTo(600, 6);
+    expect(flows.totalIn).toBeCloseTo(1000, 6);
+    expect(flows.totalOut).toBeCloseTo(400, 6);
+    expect(flows.totalNet).toBeCloseTo(600, 6);
   });
 });

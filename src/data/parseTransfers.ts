@@ -14,6 +14,7 @@ interface BsTxn {
   to?: { hash?: string };
   value?: string;
   timestamp?: string;
+  status?: string;
 }
 
 function secs(iso?: string): number {
@@ -55,6 +56,7 @@ export function parseNativeTxs(raw: unknown, chainId: ChainId, owner: string, na
     const from = it.from?.hash?.toLowerCase();
     const to = it.to?.hash?.toLowerCase();
     if (!from || !to || !it.value || it.value === '0') continue;
+    if (it.status === 'error') continue; // reverted tx: funds never moved
     const direction: 'in' | 'out' = to === o ? 'in' : 'out';
     out.push({
       chainId,

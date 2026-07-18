@@ -1,26 +1,24 @@
 import { useMemo } from 'react';
 import { useActivity } from '../state/useActivity';
-import { computeFlows } from '../data/activity';
+import { computeRecentFlows } from '../data/activity';
 import { ActivityTable } from './ActivityTable';
 import { FlowsSummary } from './FlowsSummary';
 import { LoadingSkeleton } from './primitives';
-import type { ChainId, AllocationSlice } from '../data/types';
+import type { ChainId } from '../data/types';
 import type { Wallet } from '../data/walletStore';
 
 interface Props {
   wallets: Wallet[];
   enabledChains: ChainId[];
-  byToken: AllocationSlice[];
 }
 
-export function ActivityView({ wallets, enabledChains, byToken }: Props) {
+export function ActivityView({ wallets, enabledChains }: Props) {
   const { data, isLoading } = useActivity(wallets, enabledChains, true);
 
   const flows = useMemo(() => {
     const owned = new Set(wallets.map((w) => w.address.toLowerCase()));
-    const currentBySymbol = new Map(byToken.map((s) => [s.label, s.valueUsd]));
-    return computeFlows(data ?? [], owned, currentBySymbol);
-  }, [data, wallets, byToken]);
+    return computeRecentFlows(data ?? [], owned);
+  }, [data, wallets]);
 
   if (isLoading || !data) return <LoadingSkeleton />;
 
@@ -28,9 +26,9 @@ export function ActivityView({ wallets, enabledChains, byToken }: Props) {
     <>
       <FlowsSummary
         perToken={flows.perToken}
-        totalInvested={flows.totalInvested}
-        totalCurrent={flows.totalCurrent}
-        totalGain={flows.totalGain}
+        totalIn={flows.totalIn}
+        totalOut={flows.totalOut}
+        totalNet={flows.totalNet}
       />
       <ActivityTable rows={data} />
     </>

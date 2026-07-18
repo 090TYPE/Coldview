@@ -11,28 +11,27 @@ export function buildActivity(transfers: Transfer[], unitUsdByCacheKey: Map<stri
   });
 }
 
-export function computeFlows(
+export function computeRecentFlows(
   rows: ActivityRow[],
   ownedAddresses: Set<string>,
-  currentUsdBySymbol: Map<string, number>,
-): { perToken: FlowRow[]; totalInvested: number; totalCurrent: number; totalGain: number } {
-  const invested = new Map<string, number>();
+): { perToken: FlowRow[]; totalIn: number; totalOut: number; totalNet: number } {
+  const inBy = new Map<string, number>();
+  const outBy = new Map<string, number>();
   for (const r of rows) {
     if (r.usdAtTime === null) continue;
-    if (ownedAddresses.has(r.counterparty)) continue;
-    const cur = invested.get(r.symbol) ?? 0;
-    invested.set(r.symbol, cur + (r.direction === 'in' ? r.usdAtTime : -r.usdAtTime));
+    if (ownedAddresses.has(r.counterparty)) continue; // moving your own funds isn't a flow
+    if (r.direction === 'in') inBy.set(r.symbol, (inBy.get(r.symbol) ?? 0) + r.usdAtTime);
+    else outBy.set(r.symbol, (outBy.get(r.symbol) ?? 0) + r.usdAtTime);
   }
-  const symbols = new Set<string>([...invested.keys(), ...currentUsdBySymbol.keys()]);
+  const symbols = new Set<string>([...inBy.keys(), ...outBy.keys()]);
   const perToken: FlowRow[] = [];
   for (const symbol of symbols) {
-    const investedUsd = invested.get(symbol) ?? 0;
-    const currentUsd = currentUsdBySymbol.get(symbol) ?? 0;
-    if (investedUsd === 0 && currentUsd === 0) continue;
-    perToken.push({ symbol, investedUsd, currentUsd, gainUsd: currentUsd - investedUsd });
+    const inUsd = inBy.get(symbol) ?? 0;
+    const outUsd = outBy.get(symbol) ?? 0;
+    perToken.push({ symbol, inUsd, outUsd, netUsd: inUsd - outUsd });
   }
-  perToken.sort((a, b) => b.currentUsd - a.currentUsd);
-  const totalInvested = perToken.reduce((s, r) => s + r.investedUsd, 0);
-  const totalCurrent = perToken.reduce((s, r) => s + r.currentUsd, 0);
-  return { perToken, totalInvested, totalCurrent, totalGain: totalCurrent - totalInvested };
+  perToken.sort((a, b) => (b.inUsd + b.outUsd) - (a.inUsd + a.outUsd));
+  const totalIn = perToken.reduce((s, r) => s + r.inUsd, 0);
+  const totalOut = perToken.reduce((s, r) => s + r.outUsd, 0);
+  return { perToken, totalIn, totalOut, totalNet: totalIn - totalOut };
 }

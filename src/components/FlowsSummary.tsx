@@ -5,42 +5,42 @@ const usd = (n: number) => n.toLocaleString('en-US', { style: 'currency', curren
 
 interface Props {
   perToken: FlowRow[];
-  totalInvested: number;
-  totalCurrent: number;
-  totalGain: number;
+  totalIn: number;
+  totalOut: number;
+  totalNet: number;
 }
 
-export function FlowsSummary({ perToken, totalInvested, totalCurrent, totalGain }: Props) {
-  const up = totalGain >= 0;
+export function FlowsSummary({ perToken, totalIn, totalOut, totalNet }: Props) {
+  const up = totalNet >= 0;
   return (
     <Panel className="mb-3">
-      <Label>Position flows</Label>
+      <Label>Recent flows</Label>
       <div className="flex gap-8 items-baseline mt-2 flex-wrap">
         <div>
-          <div className="text-[10px] text-muted uppercase">Net invested</div>
-          <div className="text-[22px] font-extrabold text-[#eafff6]">{usd(totalInvested)}</div>
+          <div className="text-[10px] text-muted uppercase">Received</div>
+          <div className="text-[22px] font-extrabold text-neon">{usd(totalIn)}</div>
         </div>
         <div>
-          <div className="text-[10px] text-muted uppercase">Current value</div>
-          <div className="text-[22px] font-extrabold text-[#eafff6]">{usd(totalCurrent)}</div>
+          <div className="text-[10px] text-muted uppercase">Sent</div>
+          <div className="text-[22px] font-extrabold text-danger">{usd(totalOut)}</div>
         </div>
         <div>
-          <div className="text-[10px] text-muted uppercase">Approx. gain</div>
+          <div className="text-[10px] text-muted uppercase">Net</div>
           <div className={`text-[22px] font-extrabold ${up ? 'text-neon' : 'text-danger'}`}>
-            {up ? '+' : '−'}{usd(Math.abs(totalGain))}
+            {up ? '+' : '−'}{usd(Math.abs(totalNet))}
           </div>
         </div>
       </div>
       <div className="text-[10px] text-[#3f5563] mt-2">
-        Flow-based estimate (USD in − USD out at historical prices vs current value). Not tax cost-basis; excludes transfers between your own wallets.
+        Totals for the recent transfers shown below (USD at the time of each), excluding transfers between your own wallets. This is a recent-flow view, not a full portfolio P&amp;L — older history beyond the recent window is not included.
       </div>
       {perToken.length > 0 && (
         <div className="mt-3 text-[12px]">
           {perToken.slice(0, 6).map((r) => (
             <div key={r.symbol} className="flex justify-between py-[3px] border-b border-[#0f171e] last:border-0">
               <span className="font-bold text-[#e6eef3]">{r.symbol}</span>
-              <span className="text-muted">inv {usd(r.investedUsd)} · now {usd(r.currentUsd)} ·
-                <span className={r.gainUsd >= 0 ? 'text-neon' : 'text-danger'}> {r.gainUsd >= 0 ? '+' : '−'}{usd(Math.abs(r.gainUsd))}</span>
+              <span className="text-muted">in {usd(r.inUsd)} · out {usd(r.outUsd)} ·
+                <span className={r.netUsd >= 0 ? 'text-neon' : 'text-danger'}> {r.netUsd >= 0 ? '+' : '−'}{usd(Math.abs(r.netUsd))}</span>
               </span>
             </div>
           ))}

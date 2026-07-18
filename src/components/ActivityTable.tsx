@@ -26,7 +26,7 @@ export function ActivityTable({ rows }: { rows: ActivityRow[] }) {
         </thead>
         <tbody>
           {rows.map((r) => (
-            <tr key={`${r.txHash}:${r.contract ?? 'native'}:${r.direction}`}>
+            <tr key={`${r.chainId}:${r.txHash}:${r.contract ?? 'native'}:${r.direction}`}>
               <td className="p-2.5 border-b border-[#0f171e] text-muted">{when(r.timestamp)}</td>
               <td className={`p-2.5 border-b border-[#0f171e] ${r.direction === 'in' ? 'text-neon' : 'text-danger'}`}>
                 {r.direction === 'in' ? '▼ in' : '▲ out'}

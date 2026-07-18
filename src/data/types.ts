@@ -88,7 +88,7 @@ export interface ActivityRow extends Transfer {
 
 export interface FlowRow {
   symbol: string;
-  investedUsd: number;
-  currentUsd: number;
-  gainUsd: number;
+  inUsd: number;
+  outUsd: number;
+  netUsd: number;
 }

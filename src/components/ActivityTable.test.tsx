@@ -19,11 +19,11 @@ describe('ActivityTable', () => {
 });
 
 describe('FlowsSummary', () => {
-  it('shows invested, current and gain with the flow-based disclaimer', () => {
-    const perToken: FlowRow[] = [{ symbol: 'ETH', investedUsd: 600, currentUsd: 900, gainUsd: 300 }];
-    render(<FlowsSummary perToken={perToken} totalInvested={600} totalCurrent={900} totalGain={300} />);
-    expect(screen.getByText(/invested/i)).toBeInTheDocument();
-    expect(screen.getByText(/flow-based/i)).toBeInTheDocument();
-    expect(screen.getByText('$900')).toBeInTheDocument();
+  it('shows received/sent/net for recent flows with a not-full-P&L disclaimer', () => {
+    const perToken: FlowRow[] = [{ symbol: 'ETH', inUsd: 1000, outUsd: 400, netUsd: 600 }];
+    render(<FlowsSummary perToken={perToken} totalIn={1000} totalOut={400} totalNet={600} />);
+    expect(screen.getByText(/received/i)).toBeInTheDocument();
+    expect(screen.getByText(/recent flows/i)).toBeInTheDocument();
+    expect(screen.getByText('$1,000')).toBeInTheDocument();
   });
 });
