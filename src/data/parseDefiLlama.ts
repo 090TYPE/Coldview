@@ -5,6 +5,8 @@ import type { TokenBalance, TokenKey, Price } from './types';
 const NATIVE_COINGECKO: Record<string, string> = {
   ETH: 'ethereum',
   POL: 'matic-network',
+  SOL: 'solana',
+  BTC: 'bitcoin',
 };
 
 export interface LlamaRequest {
@@ -22,6 +24,9 @@ export function defiLlamaKeys(balances: TokenBalance[]): LlamaRequest {
       const cg = NATIVE_COINGECKO[b.symbol] ?? '';
       if (!cg) continue;
       llamaKey = `coingecko:${cg}`;
+    } else if (b.chainId === 'solana') {
+      // Solana mints are base58 and case-sensitive — do NOT lowercase.
+      llamaKey = `solana:${b.contract}`;
     } else {
       llamaKey = `${b.chainId}:${b.contract.toLowerCase()}`;
     }
@@ -32,7 +37,7 @@ export function defiLlamaKeys(balances: TokenBalance[]): LlamaRequest {
 }
 
 interface LlamaResponse {
-  coins: Record<string, { price: number; confidence?: number }>;
+  coins: Record<string, { price: number; symbol?: string; confidence?: number }>;
 }
 
 export function parseDefiLlamaPrices(
@@ -45,7 +50,7 @@ export function parseDefiLlamaPrices(
   for (const [llamaKey, data] of Object.entries(res.coins)) {
     const ourKey = byLlamaKey[llamaKey];
     if (!ourKey || typeof data.price !== 'number') continue;
-    out[ourKey] = { usd: data.price, change24hPct: 0 };
+    out[ourKey] = { usd: data.price, change24hPct: 0, symbol: data.symbol };
   }
   return out;
 }
