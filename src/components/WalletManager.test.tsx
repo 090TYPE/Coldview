@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { WalletManager } from './WalletManager';
 import type { Wallet } from '../data/walletStore';
 
-const wallets: Wallet[] = [{ address: '0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b', label: 'Main' }];
+const wallets: Wallet[] = [{ address: '0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b', label: 'Main', family: 'evm' }];
 
 describe('WalletManager', () => {
   it('renders wallet chips with a shortened address', () => {

@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import type { ChainId } from '../data/types';
 import { CHAINS } from '../config/chains';
+import { detectFamily } from '../data/family';
 import {
-  loadWallets, saveWallets, isValidAddress, loadApiKey, saveApiKey, type Wallet,
+  loadWallets, saveWallets, loadApiKey, saveApiKey, type Wallet,
 } from '../data/walletStore';
 
 export type Period = '24h' | '7d' | '30d' | 'all';
@@ -26,10 +27,12 @@ export const useAppStore = create<AppState>((set, get) => ({
   byokKey: loadApiKey(),
 
   addWallet: (address, label) => {
-    if (!isValidAddress(address)) return;
-    const normalized = address.trim().toLowerCase();
+    const family = detectFamily(address);
+    if (!family) return;
+    // Only EVM addresses are case-insensitive; Solana/Bitcoin are case-sensitive.
+    const normalized = family === 'evm' ? address.trim().toLowerCase() : address.trim();
     if (get().wallets.some((w) => w.address === normalized)) return;
-    const wallets = [...get().wallets, { address: normalized, label: label.trim() || 'Wallet' }];
+    const wallets = [...get().wallets, { address: normalized, label: label.trim() || 'Wallet', family }];
     saveWallets(wallets);
     set({ wallets });
   },

@@ -24,7 +24,7 @@ describe('usePortfolio', () => {
       return { ok: true, json: async () => ({ coin_balance: '0' }) } as Response;
     }));
 
-    const wallets: Wallet[] = [{ address: '0x' + 'a'.repeat(40), label: 'Main' }];
+    const wallets: Wallet[] = [{ address: '0x' + 'a'.repeat(40), label: 'Main', family: 'evm' }];
     const { result } = renderHook(() => usePortfolio(wallets, ['arbitrum']), { wrapper });
 
     await waitFor(() => expect(result.current.data?.totalValueUsd).toBeCloseTo(2, 6));
