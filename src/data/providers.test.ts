@@ -8,7 +8,7 @@ afterEach(() => vi.restoreAllMocks());
 
 describe('fetchBalances (Blockscout)', () => {
   it('fetches token + native balances for an address on a chain', async () => {
-    const tokenJson = [{ token: { address: '0xArb', symbol: 'ARB', decimals: '18', type: 'ERC-20' }, value: '1000000000000000000' }];
+    const tokenJson = [{ token: { address_hash: '0xArb', symbol: 'ARB', decimals: '18', type: 'ERC-20', exchange_rate: '1.26' }, value: '1000000000000000000' }];
     const coinJson = { coin_balance: '2000000000000000000' };
     vi.stubGlobal('fetch', vi.fn(async (url: string) => {
       const body = url.includes('/token-balances') ? tokenJson : coinJson;
@@ -30,6 +30,25 @@ describe('fetchPrices (DefiLlama)', () => {
       { chainId: 'arbitrum', contract: '0xARB', symbol: 'ARB', decimals: 18, rawBalance: '1' },
     ]);
     expect(prices[keyOf('arbitrum', '0xARB')].usd).toBe(1.26);
+  });
+
+  it('chunks large key sets so one oversized URL cannot drop every price', async () => {
+    const balances = Array.from({ length: 120 }, (_, i) => ({
+      chainId: 'ethereum' as const,
+      contract: '0x' + i.toString(16).padStart(40, '0'),
+      symbol: 'T' + i,
+      decimals: 18,
+      rawBalance: '1',
+    }));
+    const calls: string[] = [];
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+      calls.push(url);
+      const firstKey = url.split('/current/')[1].split(',')[0];
+      return { ok: true, json: async () => ({ coins: { [firstKey]: { price: 2 } } }) } as Response;
+    }));
+    const prices = await fetchPrices(balances);
+    expect(calls.length).toBeGreaterThan(1); // 120 keys -> multiple 50-key chunks
+    expect(Object.keys(prices).length).toBe(calls.length); // one price merged per chunk
   });
 });
 

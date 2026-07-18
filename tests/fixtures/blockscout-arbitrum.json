@@ -1,14 +1,18 @@
 [
   {
-    "token": { "address": "0xUSDC", "symbol": "USDC", "decimals": "6", "type": "ERC-20" },
+    "token": { "address_hash": "0xUSDC", "symbol": "USDC", "decimals": "6", "type": "ERC-20", "exchange_rate": "1.0" },
     "value": "3120000000"
   },
   {
-    "token": { "address": "0xARB", "symbol": "ARB", "decimals": "18", "type": "ERC-20" },
+    "token": { "address_hash": "0xARB", "symbol": "ARB", "decimals": "18", "type": "ERC-20", "exchange_rate": "1.26" },
     "value": "1780000000000000000000"
   },
   {
-    "token": { "address": "0xSPAM", "symbol": "SPAM", "decimals": "18", "type": "ERC-20" },
+    "token": { "address_hash": "0xSPAM", "symbol": "SPAM", "decimals": "18", "type": "ERC-20", "exchange_rate": null },
+    "value": "5000000000000000000"
+  },
+  {
+    "token": { "address_hash": "0xZERO", "symbol": "ZERO", "decimals": "18", "type": "ERC-20", "exchange_rate": "2.0" },
     "value": "0"
   }
 ]

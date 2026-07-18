@@ -3,8 +3,9 @@ import fixture from '../../tests/fixtures/blockscout-arbitrum.json';
 import { parseBlockscoutBalances, nativeBalance } from './parseBlockscout';
 
 describe('parseBlockscoutBalances', () => {
-  it('normalizes ERC-20 token balances and skips zero balances', () => {
+  it('normalizes priced ERC-20 tokens (via address_hash), skips zero balances and spam without a market rate', () => {
     const out = parseBlockscoutBalances(fixture, 'arbitrum');
+    // SPAM has no exchange_rate and ZERO has a zero balance -> both dropped.
     expect(out.map((t) => t.symbol)).toEqual(['USDC', 'ARB']);
     const usdc = out[0];
     expect(usdc).toMatchObject({ chainId: 'arbitrum', contract: '0xusdc', decimals: 6, rawBalance: '3120000000' });

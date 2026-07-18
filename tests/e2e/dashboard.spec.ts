@@ -6,7 +6,7 @@ test('add an address and see the dashboard', async ({ page }) => {
     route.fulfill({ json: { coin_balance: '0' } }),
   );
   await page.route('**/api/v2/addresses/*/token-balances', (route) =>
-    route.fulfill({ json: [{ token: { address: '0xARB', symbol: 'ARB', decimals: '18', type: 'ERC-20' }, value: '1000000000000000000' }] }),
+    route.fulfill({ json: [{ token: { address_hash: '0xARB', symbol: 'ARB', decimals: '18', type: 'ERC-20', exchange_rate: '2' }, value: '1000000000000000000' }] }),
   );
   await page.route('**/coins.llama.fi/**', (route) =>
     route.fulfill({ json: { coins: { 'arbitrum:0xarb': { price: 2 } } } }),

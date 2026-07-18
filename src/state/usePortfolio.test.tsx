@@ -16,7 +16,7 @@ describe('usePortfolio', () => {
   it('aggregates balances and prices into a snapshot', async () => {
     vi.stubGlobal('fetch', vi.fn(async (url: string) => {
       if (url.includes('/token-balances')) {
-        return { ok: true, json: async () => ([{ token: { address: '0xARB', symbol: 'ARB', decimals: '18', type: 'ERC-20' }, value: '1000000000000000000' }]) } as Response;
+        return { ok: true, json: async () => ([{ token: { address_hash: '0xARB', symbol: 'ARB', decimals: '18', type: 'ERC-20', exchange_rate: '2' }, value: '1000000000000000000' }]) } as Response;
       }
       if (url.includes('coins.llama.fi')) {
         return { ok: true, json: async () => ({ coins: { 'arbitrum:0xarb': { price: 2 } } }) } as Response;
