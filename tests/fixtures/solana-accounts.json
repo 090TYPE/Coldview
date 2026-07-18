@@ -1,0 +1,26 @@
+[
+  {
+    "account": {
+      "data": {
+        "parsed": {
+          "info": {
+            "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "tokenAmount": { "amount": "3120000", "decimals": 6, "uiAmountString": "3.12" }
+          }
+        }
+      }
+    }
+  },
+  {
+    "account": {
+      "data": {
+        "parsed": {
+          "info": {
+            "mint": "DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ",
+            "tokenAmount": { "amount": "0", "decimals": 9, "uiAmountString": "0" }
+          }
+        }
+      }
+    }
+  }
+]
