@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "from": { "hash": "0xSENDER0000000000000000000000000000000001" },
+      "to": { "hash": "0xOWNER00000000000000000000000000000000000" },
+      "token": { "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "symbol": "USDC", "decimals": "6" },
+      "total": { "value": "3120000", "decimals": "6" },
+      "tx_hash": "0xtx1",
+      "timestamp": "2026-06-01T10:00:00.000000Z"
+    },
+    {
+      "from": { "hash": "0xOWNER00000000000000000000000000000000000" },
+      "to": { "hash": "0xRECEIVER000000000000000000000000000000002" },
+      "token": { "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "symbol": "USDC", "decimals": "6" },
+      "total": { "value": "1000000", "decimals": "6" },
+      "tx_hash": "0xtx2",
+      "timestamp": "2026-06-02T12:00:00.000000Z"
+    }
+  ]
+}

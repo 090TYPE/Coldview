@@ -69,3 +69,26 @@ export function toAmount(rawBalance: string, decimals: number): number {
   const value = Number(fracPart ? `${intPart}.${fracPart}` : intPart);
   return neg ? -value : value;
 }
+
+export interface Transfer {
+  chainId: ChainId;
+  txHash: string;
+  timestamp: number; // unix seconds
+  direction: 'in' | 'out';
+  symbol: string;
+  contract: string | null;
+  decimals: number;
+  rawAmount: string;
+  counterparty: string; // lowercased other-party address
+}
+
+export interface ActivityRow extends Transfer {
+  usdAtTime: number | null;
+}
+
+export interface FlowRow {
+  symbol: string;
+  investedUsd: number;
+  currentUsd: number;
+  gainUsd: number;
+}
