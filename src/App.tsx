@@ -14,6 +14,7 @@ import { HoldingsPanel } from './components/HoldingsPanel';
 import { EmptyState } from './components/EmptyState';
 import { ErrorBanner } from './components/ErrorBanner';
 import { ActivityView } from './components/ActivityView';
+import { NftView } from './components/NftView';
 import { LoadingSkeleton, PrivacyNote } from './components/primitives';
 
 export default function App() {
@@ -70,6 +71,8 @@ export default function App() {
 
       {view === 'activity' ? (
         <ActivityView wallets={wallets} enabledChains={enabledChains} />
+      ) : view === 'nfts' ? (
+        <NftView wallets={wallets} enabledChains={enabledChains} />
       ) : (
         <>
           {isLoading && <LoadingSkeleton />}

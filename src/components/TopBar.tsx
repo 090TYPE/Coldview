@@ -34,7 +34,7 @@ export function TopBar({ wallets, onAdd, onRemove, apiKey, onApiKey, view, onVie
     <div className="flex items-center justify-between mb-3.5 gap-4 flex-wrap">
       <div className="flex items-center gap-3">
         <div className="font-extrabold text-[#eafff6] tracking-wide">◈ Coldview<span className="text-neon">.</span></div>
-        <div className="flex gap-1">{tab('portfolio', 'Portfolio')}{tab('activity', 'Activity')}</div>
+        <div className="flex gap-1">{tab('portfolio', 'Portfolio')}{tab('activity', 'Activity')}{tab('nfts', 'NFTs')}</div>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
         {readOnly ? (

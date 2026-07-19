@@ -96,3 +96,12 @@ export interface FlowRow {
   outUsd: number;
   netUsd: number;
 }
+
+export interface Nft {
+  chainId: ChainId;
+  contract: string;
+  tokenId: string;
+  name: string;
+  collection: string;
+  imageUrl: string | null;
+}
