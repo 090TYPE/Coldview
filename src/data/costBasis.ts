@@ -14,16 +14,53 @@ export interface PnlRow {
   complete: boolean;              // tracked history fully explains the current balance
 }
 
+export interface RealizedEvent {
+  disposedTs: number;
+  acquiredTs: number;
+  symbol: string;
+  chainId: ChainId;
+  amount: number;
+  proceedsUsd: number;
+  costBasisUsd: number;
+  gainUsd: number;
+}
+
 export interface PnlSummary {
   rows: PnlRow[];
   realizedTotalUsd: number;
   unrealizedTotalUsd: number;     // sum over complete rows only
   hasPartial: boolean;
+  realizedEvents: RealizedEvent[]; // per-sale lot matches, for a tax report
 }
 
 interface Lot {
   amount: number;
   unit: number | null; // USD unit cost at acquisition; null when price unknown
+  ts: number;          // acquisition time (for holding period)
+}
+
+// Consumes `amt` from the front of the FIFO lot queue for one disposal. Records
+// a realized event per matched chunk (only when both prices are known). Returns
+// the realized total and whether the disposal exceeded available lots.
+function consume(
+  lots: Lot[], amt: number, unit: number | null, ts: number, symbol: string, chainId: ChainId, events: RealizedEvent[],
+): { realized: number; oversold: boolean } {
+  let remaining = amt;
+  let realized = 0;
+  while (remaining > 1e-12 && lots.length > 0) {
+    const lot = lots[0];
+    const take = Math.min(remaining, lot.amount);
+    if (unit !== null && lot.unit !== null) {
+      const proceeds = unit * take;
+      const cost = lot.unit * take;
+      realized += proceeds - cost;
+      events.push({ disposedTs: ts, acquiredTs: lot.ts, symbol, chainId, amount: take, proceedsUsd: proceeds, costBasisUsd: cost, gainUsd: proceeds - cost });
+    }
+    lot.amount -= take;
+    remaining -= take;
+    if (lot.amount <= 1e-12) lots.shift();
+  }
+  return { realized, oversold: remaining > 1e-9 };
 }
 
 // FIFO cost-basis P&L. Honest about coverage: Blockscout only returns a bounded
@@ -48,6 +85,7 @@ export function computePnl(
 
   const holdingByKey = new Map(holdings.map((h) => [h.key, h]));
   const rows: PnlRow[] = [];
+  const realizedEvents: RealizedEvent[] = [];
 
   for (const h of holdings) {
     const ts = (byKey.get(h.key) ?? []).slice().sort((a, b) => a.timestamp - b.timestamp);
@@ -66,19 +104,12 @@ export function computePnl(
 
       if (t.direction === 'in') {
         inAmount += amt;
-        lots.push({ amount: amt, unit });
+        lots.push({ amount: amt, unit, ts: t.timestamp });
       } else {
         outAmount += amt;
-        let remaining = amt;
-        while (remaining > 1e-12 && lots.length > 0) {
-          const lot = lots[0];
-          const take = Math.min(remaining, lot.amount);
-          if (unit !== null && lot.unit !== null) realized += (unit - lot.unit) * take;
-          lot.amount -= take;
-          remaining -= take;
-          if (lot.amount <= 1e-12) lots.shift();
-        }
-        if (remaining > 1e-9) oversold = true; // disposed more than we ever saw acquired
+        const r = consume(lots, amt, unit, t.timestamp, h.symbol, h.chainId, realizedEvents);
+        realized += r.realized;
+        if (r.oversold) oversold = true; // disposed more than we ever saw acquired
       }
     }
 
@@ -123,18 +154,11 @@ export function computePnl(
       const amt = toAmount(t.rawAmount, t.decimals);
       if (unit === null) unknownUnit = true;
       if (t.direction === 'in') {
-        lots.push({ amount: amt, unit });
+        lots.push({ amount: amt, unit, ts: t.timestamp });
       } else {
-        let remaining = amt;
-        while (remaining > 1e-12 && lots.length > 0) {
-          const lot = lots[0];
-          const take = Math.min(remaining, lot.amount);
-          if (unit !== null && lot.unit !== null) realized += (unit - lot.unit) * take;
-          lot.amount -= take;
-          remaining -= take;
-          if (lot.amount <= 1e-12) lots.shift();
-        }
-        if (remaining > 1e-9) oversold = true;
+        const r = consume(lots, amt, unit, t.timestamp, t.symbol || symbol, chainId, realizedEvents);
+        realized += r.realized;
+        if (r.oversold) oversold = true;
       }
     }
     if (realized !== 0) {
@@ -157,5 +181,6 @@ export function computePnl(
   const hasPartial = rows.some((r) => !r.complete);
 
   rows.sort((a, b) => (b.currentValueUsd ?? 0) - (a.currentValueUsd ?? 0));
-  return { rows, realizedTotalUsd, unrealizedTotalUsd, hasPartial };
+  realizedEvents.sort((a, b) => a.disposedTs - b.disposedTs);
+  return { rows, realizedTotalUsd, unrealizedTotalUsd, hasPartial, realizedEvents };
 }

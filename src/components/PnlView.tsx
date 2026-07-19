@@ -1,9 +1,19 @@
 import { usePnl } from '../state/usePnl';
 import { getChain } from '../config/chains';
+import { realizedEventsToCsv } from '../data/taxCsv';
 import { Panel, Label, LoadingSkeleton } from './primitives';
 import type { ChainId, Holding } from '../data/types';
 import type { PnlRow } from '../data/costBasis';
 import type { Wallet } from '../data/walletStore';
+
+function downloadCsv(filename: string, text: string) {
+  const url = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 const usd = (n: number | null) =>
   n === null ? '—' : n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
@@ -25,7 +35,7 @@ export function PnlView({ wallets, enabledChains, holdings }: Props) {
   const { data, isLoading } = usePnl(wallets, enabledChains, holdings, true);
   if (isLoading || !data) return <LoadingSkeleton />;
 
-  const { rows, realizedTotalUsd, unrealizedTotalUsd, hasPartial } = data;
+  const { rows, realizedTotalUsd, unrealizedTotalUsd, hasPartial, realizedEvents } = data;
 
   if (rows.length === 0) {
     return <div className="text-muted text-[12px] text-center py-10">No cost-basis history found for these wallets.</div>;
@@ -33,6 +43,17 @@ export function PnlView({ wallets, enabledChains, holdings }: Props) {
 
   return (
     <>
+      {realizedEvents.length > 0 && (
+        <div className="flex justify-end mb-2">
+          <button
+            className="border border-border rounded-full px-3 py-1 text-[12px] text-blue hover:border-blue"
+            onClick={() => downloadCsv('coldview-tax-report.csv', realizedEventsToCsv(realizedEvents))}
+            title="Capital-gains report (FIFO, Form 8949 style) — one row per matched sale"
+          >
+            ⬇ Export tax report (CSV)
+          </button>
+        </div>
+      )}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
         <Panel>
           <Label>Unrealized P&L</Label>

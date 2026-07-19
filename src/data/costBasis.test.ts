@@ -40,9 +40,12 @@ describe('computePnl (FIFO)', () => {
 
   it('matches disposals FIFO for realized P&L and keeps the remaining lot as basis', () => {
     const { transfers, map } = priced([[ethT('in', 1, 0), 1000], [ethT('in', 1, 1), 2000], [ethT('out', 1, 2), 2500]]);
-    const { rows, realizedTotalUsd } = computePnl(transfers, [hold(1, 3000)], map, NONE);
+    const { rows, realizedTotalUsd, realizedEvents } = computePnl(transfers, [hold(1, 3000)], map, NONE);
     expect(rows[0]).toMatchObject({ complete: true, realizedPnlUsd: 1500, costBasisUsd: 2000, unrealizedPnlUsd: 1000 });
     expect(realizedTotalUsd).toBe(1500);
+    // The sale is matched against the oldest lot (buy #0 @ $1000).
+    expect(realizedEvents).toHaveLength(1);
+    expect(realizedEvents[0]).toMatchObject({ symbol: 'ETH', amount: 1, proceedsUsd: 2500, costBasisUsd: 1000, gainUsd: 1500, acquiredTs: 0 * 86400 + 100 });
   });
 
   it('withholds cost basis when tracked buys do not add up to the current balance', () => {
