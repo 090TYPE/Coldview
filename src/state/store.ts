@@ -7,7 +7,7 @@ import {
 } from '../data/walletStore';
 
 export type Period = '24h' | '7d' | '30d' | 'all';
-export type View = 'portfolio' | 'activity' | 'nfts';
+export type View = 'portfolio' | 'activity' | 'nfts' | 'pnl';
 
 interface AppState {
   wallets: Wallet[];
