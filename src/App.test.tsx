@@ -21,6 +21,6 @@ function renderApp() {
 describe('App', () => {
   it('shows the onboarding EmptyState when no wallets are stored', () => {
     renderApp();
-    expect(screen.getByPlaceholderText(/wallet address/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/address or ens/i)).toBeInTheDocument();
   });
 });

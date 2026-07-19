@@ -16,7 +16,7 @@ test('add an EVM address, open Activity, see a transfer with USD@time', async ({
   );
 
   await page.goto('/');
-  await page.getByPlaceholder(/wallet address/i).fill('0x' + 'a'.repeat(40));
+  await page.getByPlaceholder(/address or ens/i).fill('0x' + 'a'.repeat(40));
   await page.getByRole('button', { name: /add/i }).click();
 
   await page.getByRole('button', { name: /activity/i }).click();

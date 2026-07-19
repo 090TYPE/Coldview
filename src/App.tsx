@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAppStore } from './state/store';
 import { usePortfolio } from './state/usePortfolio';
+import { useEnsNames } from './state/useEnsNames';
 import { getSnapshots, type SnapshotPoint } from './data/snapshot';
 import { filterSeriesByPeriod } from './data/period';
 import { TopBar } from './components/TopBar';
@@ -16,6 +17,7 @@ import { LoadingSkeleton, PrivacyNote } from './components/primitives';
 export default function App() {
   const { wallets, enabledChains, period, byokKey, view, addWallet, removeWallet, toggleChain, setPeriod, setApiKey, setView } = useAppStore();
   const { data, isLoading, isError } = usePortfolio(wallets, enabledChains);
+  const ensByAddress = useEnsNames(wallets.map((w) => w.address));
   const [series, setSeries] = useState<SnapshotPoint[]>([]);
 
   useEffect(() => {
@@ -30,7 +32,7 @@ export default function App() {
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
-      <TopBar wallets={wallets} onAdd={addWallet} onRemove={removeWallet} apiKey={byokKey} onApiKey={setApiKey} view={view} onView={setView} />
+      <TopBar wallets={wallets} onAdd={addWallet} onRemove={removeWallet} apiKey={byokKey} onApiKey={setApiKey} view={view} onView={setView} ensByAddress={ensByAddress} />
       <ChainFilter enabled={enabledChains} onToggle={toggleChain} />
 
       {view === 'activity' ? (

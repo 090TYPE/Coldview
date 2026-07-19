@@ -15,7 +15,7 @@ test('add a Solana address and see a SOL holding', async ({ page }) => {
   );
 
   await page.goto('/');
-  await page.getByPlaceholder(/wallet address/i).fill('7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs');
+  await page.getByPlaceholder(/address or ens/i).fill('7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs');
   await page.getByRole('button', { name: /add/i }).click();
 
   await expect(page.getByText('SOL').first()).toBeVisible();

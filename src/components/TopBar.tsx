@@ -11,9 +11,10 @@ interface Props {
   onApiKey: (k: string) => void;
   view: View;
   onView: (v: View) => void;
+  ensByAddress?: Record<string, { name: string | null; avatar: string | null }>;
 }
 
-export function TopBar({ wallets, onAdd, onRemove, apiKey, onApiKey, view, onView }: Props) {
+export function TopBar({ wallets, onAdd, onRemove, apiKey, onApiKey, view, onView, ensByAddress }: Props) {
   const tab = (v: View, label: string) => (
     <button
       onClick={() => onView(v)}
@@ -31,7 +32,7 @@ export function TopBar({ wallets, onAdd, onRemove, apiKey, onApiKey, view, onVie
         <div className="flex gap-1">{tab('portfolio', 'Portfolio')}{tab('activity', 'Activity')}</div>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
-        <WalletManager wallets={wallets} onAdd={onAdd} onRemove={onRemove} />
+        <WalletManager wallets={wallets} onAdd={onAdd} onRemove={onRemove} ensByAddress={ensByAddress} />
         <ApiKeyControl value={apiKey} onChange={onApiKey} />
       </div>
     </div>
