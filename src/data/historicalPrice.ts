@@ -39,17 +39,30 @@ export async function hydrateHistoricalUsd(transfers: Transfer[]): Promise<Map<s
     const llamaK = llamaKey(t.chainId, t.contract, t.symbol)!;
     need.set(ck, { llamaK, unixTs: Math.floor(t.timestamp / DAY) * DAY });
   }
-  for (const [ck, { llamaK, unixTs }] of need) {
-    const cached = await get<number>(`hist:${ck}`);
-    if (typeof cached === 'number') {
-      result.set(ck, cached);
-      continue;
-    }
-    const price = await fetchHistorical(llamaK, unixTs);
-    if (price !== null) {
-      await set(`hist:${ck}`, price);
-      result.set(ck, price);
-    }
+  // Resolve cache hits first (cheap, parallel), then fetch the misses with
+  // bounded concurrency. A wallet with deep history can need hundreds of
+  // per-day lookups; doing them sequentially made the P&L/Activity tabs crawl.
+  const entries = [...need.entries()];
+  await Promise.all(
+    entries.map(async ([ck]) => {
+      const cached = await get<number>(`hist:${ck}`);
+      if (typeof cached === 'number') result.set(ck, cached);
+    }),
+  );
+
+  const misses = entries.filter(([ck]) => !result.has(ck));
+  const CONCURRENCY = 10;
+  for (let i = 0; i < misses.length; i += CONCURRENCY) {
+    const batch = misses.slice(i, i + CONCURRENCY);
+    await Promise.all(
+      batch.map(async ([ck, { llamaK, unixTs }]) => {
+        const price = await fetchHistorical(llamaK, unixTs);
+        if (price !== null) {
+          await set(`hist:${ck}`, price);
+          result.set(ck, price);
+        }
+      }),
+    );
   }
   return result;
 }
