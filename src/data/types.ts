@@ -2,6 +2,7 @@ import type { Family } from './family';
 
 export type ChainId =
   | 'ethereum' | 'arbitrum' | 'base' | 'polygon' | 'optimism'
+  | 'zksync' | 'scroll' | 'gnosis' | 'celo'
   | 'solana' | 'bitcoin';
 
 export interface ChainInfo {

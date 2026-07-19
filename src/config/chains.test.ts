@@ -2,10 +2,19 @@ import { describe, it, expect } from 'vitest';
 import { CHAINS, getChain } from './chains';
 
 describe('chain registry', () => {
-  it('includes the five EVM chains plus Solana and Bitcoin', () => {
+  it('includes the EVM chains plus Solana and Bitcoin', () => {
     expect(CHAINS.map((c) => c.id)).toEqual([
-      'ethereum', 'arbitrum', 'base', 'polygon', 'optimism', 'solana', 'bitcoin',
+      'ethereum', 'arbitrum', 'base', 'polygon', 'optimism',
+      'zksync', 'scroll', 'gnosis', 'celo',
+      'solana', 'bitcoin',
     ]);
+  });
+  it('every EVM chain resolves a native price (DefiLlama coingecko id)', () => {
+    // Guards against adding a chain whose native symbol lacks a price mapping.
+    const priced = new Set(['ETH', 'POL', 'XDAI', 'CELO']);
+    for (const c of CHAINS.filter((x) => x.family === 'evm')) {
+      expect(priced.has(c.nativeSymbol)).toBe(true);
+    }
   });
   it('tags each chain with a family', () => {
     expect(getChain('ethereum').family).toBe('evm');

@@ -1,7 +1,7 @@
 import { get, set } from 'idb-keyval';
 import type { ChainId, Transfer } from './types';
 
-const NATIVE_CG: Record<string, string> = { ETH: 'ethereum', POL: 'matic-network', SOL: 'solana', BTC: 'bitcoin' };
+const NATIVE_CG: Record<string, string> = { ETH: 'ethereum', POL: 'matic-network', SOL: 'solana', BTC: 'bitcoin', XDAI: 'xdai', CELO: 'celo' };
 const DAY = 86400;
 
 export function llamaKey(chainId: ChainId, contract: string | null, symbol: string): string | null {

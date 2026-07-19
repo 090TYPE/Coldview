@@ -7,6 +7,8 @@ const NATIVE_COINGECKO: Record<string, string> = {
   POL: 'matic-network',
   SOL: 'solana',
   BTC: 'bitcoin',
+  XDAI: 'xdai',
+  CELO: 'celo',
 };
 
 export interface LlamaRequest {
