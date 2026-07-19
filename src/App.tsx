@@ -7,7 +7,7 @@ import { TopBar } from './components/TopBar';
 import { ChainFilter } from './components/ChainFilter';
 import { HeroPanel } from './components/HeroPanel';
 import { AllocationPanel } from './components/AllocationPanel';
-import { HoldingsTable } from './components/HoldingsTable';
+import { HoldingsPanel } from './components/HoldingsPanel';
 import { EmptyState } from './components/EmptyState';
 import { ErrorBanner } from './components/ErrorBanner';
 import { ActivityView } from './components/ActivityView';
@@ -54,7 +54,7 @@ export default function App() {
                 />
                 <AllocationPanel byToken={data.byToken} byChain={data.byChain} />
               </div>
-              <HoldingsTable holdings={data.holdings} />
+              <HoldingsPanel holdings={data.holdings} />
             </>
           )}
         </>
