@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { HoldingsTable } from './HoldingsTable';
 import { holdingsToCsv } from '../data/holdingsCsv';
-import type { Holding } from '../data/types';
+import type { Holding, TokenKey } from '../data/types';
 
 type Sort = 'value' | 'name';
 
@@ -15,7 +15,7 @@ function download(filename: string, text: string) {
   URL.revokeObjectURL(url);
 }
 
-export function HoldingsPanel({ holdings }: { holdings: Holding[] }) {
+export function HoldingsPanel({ holdings, sparklines }: { holdings: Holding[]; sparklines?: Record<TokenKey, number[]> }) {
   const [hideDust, setHideDust] = useState(false);
   const [sort, setSort] = useState<Sort>('value');
 
@@ -49,7 +49,7 @@ export function HoldingsPanel({ holdings }: { holdings: Holding[] }) {
           Export CSV
         </button>
       </div>
-      <HoldingsTable holdings={rows} />
+      <HoldingsTable holdings={rows} sparklines={sparklines} />
     </div>
   );
 }

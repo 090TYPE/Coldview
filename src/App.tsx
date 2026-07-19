@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAppStore } from './state/store';
 import { usePortfolio } from './state/usePortfolio';
 import { useEnsNames } from './state/useEnsNames';
+import { useSparklines } from './state/useSparklines';
 import { getSnapshots, type SnapshotPoint } from './data/snapshot';
 import { filterSeriesByPeriod } from './data/period';
 import { TopBar } from './components/TopBar';
@@ -18,6 +19,7 @@ export default function App() {
   const { wallets, enabledChains, period, byokKey, view, addWallet, removeWallet, toggleChain, setPeriod, setApiKey, setView } = useAppStore();
   const { data, isLoading, isError } = usePortfolio(wallets, enabledChains);
   const ensByAddress = useEnsNames(wallets.map((w) => w.address));
+  const sparklines = useSparklines(data?.holdings ?? []);
   const [series, setSeries] = useState<SnapshotPoint[]>([]);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ export default function App() {
                 />
                 <AllocationPanel byToken={data.byToken} byChain={data.byChain} />
               </div>
-              <HoldingsPanel holdings={data.holdings} />
+              <HoldingsPanel holdings={data.holdings} sparklines={sparklines} />
             </>
           )}
         </>

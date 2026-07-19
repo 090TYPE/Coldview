@@ -1,13 +1,14 @@
 import { getChain } from '../config/chains';
 import { TokenIcon } from './TokenIcon';
-import type { Holding } from '../data/types';
+import { Sparkline } from './Sparkline';
+import type { Holding, TokenKey } from '../data/types';
 
 const usd = (n: number | null) =>
   n === null ? '—' : n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
 const pct = (n: number | null) => (n === null ? '' : `${n >= 0 ? '▲' : '▼'} ${Math.abs(n).toFixed(1)}%`);
 
-export function HoldingsTable({ holdings }: { holdings: Holding[] }) {
+export function HoldingsTable({ holdings, sparklines }: { holdings: Holding[]; sparklines?: Record<TokenKey, number[]> }) {
   return (
     <div className="bg-panel border border-border rounded-[10px] overflow-x-auto">
       <table className="w-full text-[12.5px]">
@@ -18,6 +19,7 @@ export function HoldingsTable({ holdings }: { holdings: Holding[] }) {
             <th className="text-right p-2.5 border-b border-border">Balance</th>
             <th className="text-right p-2.5 border-b border-border">Price</th>
             <th className="text-right p-2.5 border-b border-border">Value</th>
+            <th className="text-right p-2.5 border-b border-border">7d</th>
             <th className="text-right p-2.5 border-b border-border">24h</th>
           </tr>
         </thead>
@@ -38,6 +40,9 @@ export function HoldingsTable({ holdings }: { holdings: Holding[] }) {
               <td className="p-2.5 border-b border-[#0f171e] text-right">{h.amount.toLocaleString('en-US', { maximumFractionDigits: 4 })}</td>
               <td className="p-2.5 border-b border-[#0f171e] text-right">{usd(h.priceUsd)}</td>
               <td className="p-2.5 border-b border-[#0f171e] text-right">{usd(h.valueUsd)}</td>
+              <td className="p-2.5 border-b border-[#0f171e] text-right">
+                <span className="inline-flex justify-end w-full"><Sparkline data={sparklines?.[h.key]} /></span>
+              </td>
               <td className={`p-2.5 border-b border-[#0f171e] text-right ${h.change24hPct === null ? 'text-muted' : h.change24hPct >= 0 ? 'text-neon' : 'text-danger'}`}>
                 {pct(h.change24hPct)}
               </td>
