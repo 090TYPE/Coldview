@@ -7,7 +7,7 @@ import { getChain } from '../config/chains';
 import type { ChainId, TokenBalance, TokenKey, Price, PortfolioSnapshot } from '../data/types';
 import type { Wallet } from '../data/walletStore';
 
-async function loadPortfolio(wallets: Wallet[], chains: ChainId[]): Promise<PortfolioSnapshot> {
+async function loadPortfolio(wallets: Wallet[], chains: ChainId[], persist: boolean): Promise<PortfolioSnapshot> {
   const pairs = wallets.flatMap((w) =>
     chains.filter((c) => getChain(c).family === w.family).map((c) => ({ address: w.address, chain: c })),
   );
@@ -22,16 +22,18 @@ async function loadPortfolio(wallets: Wallet[], chains: ChainId[]): Promise<Port
   }
   const snapshot = aggregatePortfolio(balances, prices, { minValueUsd: 0.01 });
 
-  if (snapshot.totalValueUsd > 0) {
+  // Don't pollute the viewer's own history when they're looking at someone
+  // else's shared portfolio.
+  if (persist && snapshot.totalValueUsd > 0) {
     await appendSnapshot(snapshot.totalValueUsd);
   }
   return snapshot;
 }
 
-export function usePortfolio(wallets: Wallet[], chains: ChainId[]) {
+export function usePortfolio(wallets: Wallet[], chains: ChainId[], persist = true) {
   return useQuery({
     queryKey: ['portfolio', wallets.map((w) => w.address).sort(), [...chains].sort()],
-    queryFn: () => loadPortfolio(wallets, chains),
+    queryFn: () => loadPortfolio(wallets, chains, persist),
     enabled: wallets.length > 0 && chains.length > 0,
     staleTime: 60_000,
     retry: 1,
