@@ -1,5 +1,6 @@
 import { getChain } from '../config/chains';
 import { toAmount } from '../data/types';
+import { TokenIcon } from './TokenIcon';
 import type { ActivityRow } from '../data/types';
 
 const usd = (n: number | null) =>
@@ -31,7 +32,12 @@ export function ActivityTable({ rows }: { rows: ActivityRow[] }) {
               <td className={`p-2.5 border-b border-[#0f171e] ${r.direction === 'in' ? 'text-neon' : 'text-danger'}`}>
                 {r.direction === 'in' ? '▼ in' : '▲ out'}
               </td>
-              <td className="p-2.5 border-b border-[#0f171e] font-bold text-[#e6eef3]">{r.symbol}</td>
+              <td className="p-2.5 border-b border-[#0f171e] font-bold text-[#e6eef3]">
+                <span className="flex items-center gap-2">
+                  <TokenIcon iconUrl={r.iconUrl ?? null} symbol={r.symbol} size={16} />
+                  {r.symbol}
+                </span>
+              </td>
               <td className="p-2.5 border-b border-[#0f171e] text-right">
                 {toAmount(r.rawAmount, r.decimals).toLocaleString('en-US', { maximumFractionDigits: 4 })}
               </td>

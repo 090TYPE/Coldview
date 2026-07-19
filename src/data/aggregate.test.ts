@@ -56,6 +56,15 @@ describe('aggregatePortfolio', () => {
     expect(arb.pct).toBeCloseTo(25, 6);
   });
 
+  it('carries a token icon onto its by-token allocation slice', () => {
+    const balances = [
+      bal({ chainId: 'ethereum', contract: '0xu', symbol: 'USDC', decimals: 6, rawBalance: '1000000', iconUrl: 'https://assets.example/usdc.png' }),
+    ];
+    const snap = aggregatePortfolio(balances, prices({ [keyOf('ethereum', '0xu')]: { usd: 1, change24hPct: 0 } }));
+    const usdc = snap.byToken.find((s) => s.label === 'USDC')!;
+    expect(usdc.iconUrl).toBe('https://assets.example/usdc.png');
+  });
+
   it('drops dust and priceless tokens below the value threshold', () => {
     const balances = [
       bal({ chainId: 'base', contract: '0xspam', symbol: 'SPAM', decimals: 18, rawBalance: '1000000000000000000' }),

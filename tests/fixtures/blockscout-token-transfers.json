@@ -3,7 +3,7 @@
     {
       "from": { "hash": "0xSENDER0000000000000000000000000000000001" },
       "to": { "hash": "0xOWNER00000000000000000000000000000000000" },
-      "token": { "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "symbol": "USDC", "decimals": "6" },
+      "token": { "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "symbol": "USDC", "decimals": "6", "icon_url": "https://assets.example/usdc.png" },
       "total": { "value": "3120000", "decimals": "6" },
       "tx_hash": "0xtx1",
       "timestamp": "2026-06-01T10:00:00.000000Z"

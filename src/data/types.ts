@@ -47,6 +47,7 @@ export interface AllocationSlice {
   label: string;
   valueUsd: number;
   pct: number;
+  iconUrl?: string | null;
 }
 
 export interface PortfolioSnapshot {
@@ -82,6 +83,7 @@ export interface Transfer {
   decimals: number;
   rawAmount: string;
   counterparty: string; // lowercased other-party address
+  iconUrl?: string | null; // token logo when known (EVM token transfers)
 }
 
 export interface ActivityRow extends Transfer {

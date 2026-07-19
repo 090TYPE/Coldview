@@ -17,12 +17,18 @@ describe('parseTokenTransfers', () => {
     expect(out[1]).toMatchObject({ direction: 'out', counterparty: '0xreceiver000000000000000000000000000000002' });
     expect(out[0].timestamp).toBe(Math.floor(Date.parse('2026-06-01T10:00:00Z') / 1000));
   });
+
+  it('carries the token icon_url onto the transfer', () => {
+    const out = parseTokenTransfers(tokenFixture, 'ethereum', OWNER);
+    expect(out[0].iconUrl).toBe('https://assets.example/usdc.png');
+    expect(out[1].iconUrl).toBeNull(); // second transfer has no icon_url in the fixture
+  });
 });
 
 describe('parseNativeTxs', () => {
   it('keeps value-bearing native txs and skips zero-value calls', () => {
     const out = parseNativeTxs(txFixture, 'ethereum', OWNER, 'ETH');
     expect(out).toHaveLength(1);
-    expect(out[0]).toMatchObject({ txHash: '0xtx3', direction: 'in', symbol: 'ETH', contract: null, decimals: 18, rawAmount: '1000000000000000000' });
+    expect(out[0]).toMatchObject({ txHash: '0xtx3', direction: 'in', symbol: 'ETH', contract: null, decimals: 18, rawAmount: '1000000000000000000', iconUrl: null });
   });
 });

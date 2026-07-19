@@ -53,7 +53,7 @@ export function aggregatePortfolio(
     : 0;
 
   // 5. Allocation by token symbol and by chain.
-  const byToken = groupSlices(kept, (h) => h.symbol, totalValueUsd);
+  const byToken = groupSlices(kept, (h) => h.symbol, totalValueUsd, (h) => h.iconUrl);
   const byChain = groupSlices(kept, (h) => getChain(h.chainId).name, totalValueUsd);
 
   return { holdings: kept, totalValueUsd, change24hPct, byToken, byChain };
@@ -63,13 +63,20 @@ function groupSlices(
   holdings: Holding[],
   labelOf: (h: Holding) => string,
   total: number,
+  iconOf?: (h: Holding) => string | null,
 ): AllocationSlice[] {
   const sums = new Map<string, number>();
+  const icons = new Map<string, string | null>();
   for (const h of holdings) {
-    sums.set(labelOf(h), (sums.get(labelOf(h)) ?? 0) + (h.valueUsd ?? 0));
+    const label = labelOf(h);
+    sums.set(label, (sums.get(label) ?? 0) + (h.valueUsd ?? 0));
+    if (iconOf && !icons.get(label)) {
+      const ic = iconOf(h);
+      if (ic) icons.set(label, ic);
+    }
   }
   return [...sums.entries()]
-    .map(([label, valueUsd]) => ({ label, valueUsd, pct: total > 0 ? (valueUsd / total) * 100 : 0 }))
+    .map(([label, valueUsd]) => ({ label, valueUsd, pct: total > 0 ? (valueUsd / total) * 100 : 0, iconUrl: icons.get(label) ?? null }))
     .sort((a, b) => b.valueUsd - a.valueUsd);
 }
 

@@ -3,7 +3,7 @@ import type { ChainId, Transfer } from './types';
 interface BsTokenTransfer {
   from?: { hash?: string };
   to?: { hash?: string };
-  token?: { address?: string; symbol?: string | null; decimals?: string | null };
+  token?: { address?: string; symbol?: string | null; decimals?: string | null; icon_url?: string | null };
   total?: { value?: string; decimals?: string | null };
   tx_hash?: string;
   timestamp?: string;
@@ -42,6 +42,7 @@ export function parseTokenTransfers(raw: unknown, chainId: ChainId, owner: strin
       decimals: Number(it.token.decimals ?? it.total?.decimals ?? 18),
       rawAmount: value,
       counterparty: direction === 'in' ? from : to,
+      iconUrl: it.token.icon_url ?? null,
     });
   }
   return out;
@@ -68,6 +69,7 @@ export function parseNativeTxs(raw: unknown, chainId: ChainId, owner: string, na
       decimals: 18,
       rawAmount: it.value,
       counterparty: direction === 'in' ? from : to,
+      iconUrl: null,
     });
   }
   return out;
