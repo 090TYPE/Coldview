@@ -5,9 +5,10 @@ import { detectFamily } from '../data/family';
 import {
   loadWallets, saveWallets, loadApiKey, saveApiKey, type Wallet,
 } from '../data/walletStore';
+import { loadAlerts, saveAlerts, type Alert } from '../data/alerts';
 
 export type Period = '24h' | '7d' | '30d' | 'all';
-export type View = 'portfolio' | 'activity' | 'nfts' | 'pnl';
+export type View = 'portfolio' | 'activity' | 'nfts' | 'pnl' | 'alerts';
 
 interface AppState {
   wallets: Wallet[];
@@ -15,12 +16,16 @@ interface AppState {
   period: Period;
   byokKey: string;
   view: View;
+  alerts: Alert[];
   addWallet: (address: string, label: string) => void;
   removeWallet: (address: string) => void;
   toggleChain: (id: ChainId) => void;
   setPeriod: (p: Period) => void;
   setApiKey: (k: string) => void;
   setView: (v: View) => void;
+  addAlert: (symbol: string, direction: 'above' | 'below', target: number) => void;
+  removeAlert: (id: string) => void;
+  setAlertTriggered: (id: string, triggered: boolean) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -29,6 +34,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   period: '30d',
   byokKey: loadApiKey(),
   view: 'portfolio',
+  alerts: loadAlerts(),
 
   addWallet: (address, label) => {
     const family = detectFamily(address);
@@ -60,4 +66,23 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   setView: (view) => set({ view }),
+
+  addAlert: (symbol, direction, target) => {
+    const alert: Alert = { id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, symbol: symbol.trim().toUpperCase(), direction, target, triggered: false };
+    const alerts = [...get().alerts, alert];
+    saveAlerts(alerts);
+    set({ alerts });
+  },
+
+  removeAlert: (id) => {
+    const alerts = get().alerts.filter((a) => a.id !== id);
+    saveAlerts(alerts);
+    set({ alerts });
+  },
+
+  setAlertTriggered: (id, triggered) => {
+    const alerts = get().alerts.map((a) => (a.id === id ? { ...a, triggered } : a));
+    saveAlerts(alerts);
+    set({ alerts });
+  },
 }));

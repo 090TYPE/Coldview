@@ -16,6 +16,8 @@ import { ErrorBanner } from './components/ErrorBanner';
 import { ActivityView } from './components/ActivityView';
 import { NftView } from './components/NftView';
 import { PnlView } from './components/PnlView';
+import { AlertsView } from './components/AlertsView';
+import { useAlertNotifier } from './state/useAlertNotifier';
 import { LoadingSkeleton, PrivacyNote } from './components/primitives';
 
 export default function App() {
@@ -32,6 +34,7 @@ export default function App() {
   const { data, isLoading, isError } = usePortfolio(wallets, enabledChains, !readOnly);
   const ensByAddress = useEnsNames(wallets.map((w) => w.address));
   const sparklines = useSparklines(data?.holdings ?? []);
+  useAlertNotifier(data?.holdings ?? []);
   const [series, setSeries] = useState<SnapshotPoint[]>([]);
 
   useEffect(() => {
@@ -76,6 +79,8 @@ export default function App() {
         <NftView wallets={wallets} enabledChains={enabledChains} />
       ) : view === 'pnl' ? (
         !data ? <LoadingSkeleton /> : <PnlView wallets={wallets} enabledChains={enabledChains} holdings={data.holdings} />
+      ) : view === 'alerts' ? (
+        <AlertsView holdings={data?.holdings ?? []} />
       ) : (
         <>
           {isLoading && <LoadingSkeleton />}
