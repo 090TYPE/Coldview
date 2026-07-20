@@ -30,13 +30,14 @@ interface RawLog {
 export function parseApprovals(raw: unknown, owner: string): TokenApproval[] {
   if (!Array.isArray(raw)) return [];
   const ownerLc = owner.toLowerCase();
+  const ownerTopic = ownerToTopic(ownerLc);
   const latest = new Map<string, TokenApproval>();
 
   for (const item of raw as RawLog[]) {
     const t = item?.topics;
     if (!Array.isArray(t) || t.length < 3) continue;
     if ((t[0] ?? '').toLowerCase() !== APPROVAL_TOPIC0) continue;
-    if ((t[1] ?? '').toLowerCase() !== ownerToTopic(ownerLc)) continue;
+    if ((t[1] ?? '').toLowerCase() !== ownerTopic) continue;
     if (!item.address || !t[1] || !t[2] || item.data == null) continue;
 
     let value: bigint;

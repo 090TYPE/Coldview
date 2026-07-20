@@ -53,7 +53,7 @@ export function ApprovalsSection({ approvals, holdings, isLoading }: Props) {
                   symbolByKey.get(`${a.chainId}:${a.tokenAddress}`.toLowerCase()) ??
                   shortAddr(a.tokenAddress);
                 return (
-                  <tr key={`${a.chainId}:${a.tokenAddress}:${a.spender}`}>
+                  <tr key={`${a.chainId}:${a.owner}:${a.tokenAddress}:${a.spender}`}>
                     <td className="p-2.5 border-b border-[#0f171e] font-bold text-[#e6eef3]">{symbol}</td>
                     <td className="p-2.5 border-b border-[#0f171e] font-mono text-[11px] text-muted">{shortAddr(a.spender)}</td>
                     <td className="p-2.5 border-b border-[#0f171e] text-right">

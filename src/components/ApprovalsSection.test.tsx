@@ -32,6 +32,16 @@ describe('ApprovalsSection', () => {
     expect(link).toHaveAttribute('href', `https://revoke.cash/address/${base.owner}`);
   });
 
+  it('renders separate rows for two wallets approving the same token+spender', () => {
+    const a1 = { ...base, owner: '0x' + '1'.repeat(40) };
+    const a2 = { ...base, owner: '0x' + '2'.repeat(40) };
+    render(<ApprovalsSection approvals={[a1, a2]} holdings={[]} isLoading={false} />);
+    const links = screen.getAllByRole('link');
+    expect(links).toHaveLength(2);
+    expect(links[0]).toHaveAttribute('href', `https://revoke.cash/address/${a1.owner}`);
+    expect(links[1]).toHaveAttribute('href', `https://revoke.cash/address/${a2.owner}`);
+  });
+
   it('shows a loading skeleton while loading', () => {
     const { container } = render(<ApprovalsSection approvals={[]} holdings={[]} isLoading={true} />);
     expect(screen.queryByText(/No active token approvals/i)).not.toBeInTheDocument();
