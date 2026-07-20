@@ -79,6 +79,28 @@ describe('aggregatePortfolio', () => {
     expect(snap.totalValueUsd).toBeCloseTo(2000, 6);
   });
 
+  it('falls back to the balance fallbackPriceUsd when no market price is available', () => {
+    const c = '0xmeme';
+    const balances = [
+      bal({ chainId: 'ethereum', contract: c, symbol: 'MEME', decimals: 18, rawBalance: '1000000000000000000', fallbackPriceUsd: 0.5 }),
+    ];
+    // No entry for this token in the DefiLlama price map — must use the fallback.
+    const snap = aggregatePortfolio(balances, prices({}), { minValueUsd: 0.01 });
+    expect(snap.holdings).toHaveLength(1);
+    expect(snap.holdings[0].priceUsd).toBeCloseTo(0.5, 6);
+    expect(snap.holdings[0].valueUsd).toBeCloseTo(0.5, 6);
+    expect(snap.totalValueUsd).toBeCloseTo(0.5, 6);
+  });
+
+  it('prefers the market price over the fallback when both exist', () => {
+    const c = '0xtok';
+    const balances = [
+      bal({ chainId: 'ethereum', contract: c, symbol: 'TOK', decimals: 18, rawBalance: '1000000000000000000', fallbackPriceUsd: 0.5 }),
+    ];
+    const snap = aggregatePortfolio(balances, prices({ [keyOf('ethereum', c)]: { usd: 2, change24hPct: 0 } }));
+    expect(snap.holdings[0].priceUsd).toBeCloseTo(2, 6); // market price wins
+  });
+
   it('fills an empty token symbol from the price symbol, else a short mint', () => {
     const mint = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
     const noName = 'So1111111111111111111111111111111111111112';

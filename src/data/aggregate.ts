@@ -33,7 +33,10 @@ export function aggregatePortfolio(
   for (const [k, b] of merged) {
     const amount = toAmount(b.rawBalance, b.decimals);
     const price = prices[k];
-    const priceUsd = price ? price.usd : null;
+    // Prefer the market price (DefiLlama); fall back to the balance source's own
+    // spot rate (Blockscout exchange_rate) so priced-but-unlisted tokens still count.
+    const fallback = b.fallbackPriceUsd != null && b.fallbackPriceUsd > 0 ? b.fallbackPriceUsd : null;
+    const priceUsd = price ? price.usd : fallback;
     const valueUsd = priceUsd !== null ? amount * priceUsd : null;
     const change24hPct = price ? price.change24hPct : null;
     const symbol = b.symbol || price?.symbol || shortMint(b.contract);

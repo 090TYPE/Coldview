@@ -11,6 +11,12 @@ describe('parseBlockscoutBalances', () => {
     expect(usdc).toMatchObject({ chainId: 'arbitrum', contract: '0xusdc', decimals: 6, rawBalance: '3120000000', iconUrl: 'https://assets.example/usdc.png' });
     expect(out[1].iconUrl).toBeNull(); // ARB has no icon_url -> null
   });
+
+  it("carries Blockscout's exchange_rate as a fallback price", () => {
+    const out = parseBlockscoutBalances(fixture, 'arbitrum');
+    expect(out[0].fallbackPriceUsd).toBeCloseTo(1, 6);    // USDC exchange_rate 1.0
+    expect(out[1].fallbackPriceUsd).toBeCloseTo(1.26, 6); // ARB exchange_rate 1.26
+  });
 });
 
 describe('nativeBalance', () => {

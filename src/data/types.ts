@@ -23,6 +23,7 @@ export interface TokenBalance {
   decimals: number;
   rawBalance: string; // integer string
   iconUrl?: string | null;
+  fallbackPriceUsd?: number | null; // spot price from the balance source, used when no market price is found
 }
 
 export type TokenKey = string; // `${chainId}:${contract-lowercased | 'native'}`

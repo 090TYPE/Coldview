@@ -36,6 +36,9 @@ export function parseBlockscoutBalances(raw: unknown, chainId: ChainId): TokenBa
       decimals,
       rawBalance: item.value,
       iconUrl: item.token.icon_url ?? null,
+      // Keep Blockscout's own market rate as a fallback: DefiLlama doesn't price
+      // every long-tail token, and without this those holdings drop out entirely.
+      fallbackPriceUsd: rate,
     });
   }
   return out;
