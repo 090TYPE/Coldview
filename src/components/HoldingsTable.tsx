@@ -8,7 +8,14 @@ const usd = (n: number | null) =>
 
 const pct = (n: number | null) => (n === null ? '' : `${n >= 0 ? '▲' : '▼'} ${Math.abs(n).toFixed(1)}%`);
 
-export function HoldingsTable({ holdings, sparklines }: { holdings: Holding[]; sparklines?: Record<TokenKey, number[]> }) {
+interface TableProps {
+  holdings: Holding[];
+  sparklines?: Record<TokenKey, number[]>;
+  onHide?: (key: TokenKey) => void;   // renders a per-row hide/unhide action
+  hiddenMode?: boolean;               // true when listing already-hidden tokens (show ↺ restore)
+}
+
+export function HoldingsTable({ holdings, sparklines, onHide, hiddenMode }: TableProps) {
   return (
     <div className="bg-panel border border-border rounded-[10px] overflow-x-auto">
       <table className="w-full text-[12.5px]">
@@ -21,6 +28,7 @@ export function HoldingsTable({ holdings, sparklines }: { holdings: Holding[]; s
             <th className="text-right p-2.5 border-b border-border">Value</th>
             <th className="text-right p-2.5 border-b border-border">7d</th>
             <th className="text-right p-2.5 border-b border-border">24h</th>
+            {onHide && <th className="p-2.5 border-b border-border" />}
           </tr>
         </thead>
         <tbody>
@@ -46,6 +54,18 @@ export function HoldingsTable({ holdings, sparklines }: { holdings: Holding[]; s
               <td className={`p-2.5 border-b border-[#0f171e] text-right ${h.change24hPct === null ? 'text-muted' : h.change24hPct >= 0 ? 'text-neon' : 'text-danger'}`}>
                 {pct(h.change24hPct)}
               </td>
+              {onHide && (
+                <td className="p-2.5 border-b border-[#0f171e] text-right">
+                  <button
+                    aria-label={`${hiddenMode ? 'unhide' : 'hide'} ${h.symbol}`}
+                    title={hiddenMode ? 'Show again' : 'Hide (spam / unwanted)'}
+                    className="text-muted hover:text-neon"
+                    onClick={() => onHide(h.key)}
+                  >
+                    {hiddenMode ? '↺' : '×'}
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

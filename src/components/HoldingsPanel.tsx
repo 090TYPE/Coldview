@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { HoldingsTable } from './HoldingsTable';
 import { holdingsToCsv } from '../data/holdingsCsv';
+import { useAppStore } from '../state/store';
 import type { Holding, TokenKey } from '../data/types';
 
 type Sort = 'value' | 'name';
@@ -18,14 +19,21 @@ function download(filename: string, text: string) {
 export function HoldingsPanel({ holdings, sparklines }: { holdings: Holding[]; sparklines?: Record<TokenKey, number[]> }) {
   const [hideDust, setHideDust] = useState(false);
   const [sort, setSort] = useState<Sort>('value');
+  const [showHidden, setShowHidden] = useState(false);
+  const { hiddenKeys, hideToken, unhideToken } = useAppStore();
+
+  const hidden = useMemo(() => new Set(hiddenKeys), [hiddenKeys]);
 
   const rows = useMemo(() => {
-    let r = hideDust ? holdings.filter((h) => (h.valueUsd ?? 0) >= 1) : holdings;
+    let r = holdings.filter((h) => !hidden.has(h.key));
+    if (hideDust) r = r.filter((h) => (h.valueUsd ?? 0) >= 1);
     r = [...r].sort((a, b) =>
       sort === 'name' ? a.symbol.localeCompare(b.symbol) : (b.valueUsd ?? 0) - (a.valueUsd ?? 0),
     );
     return r;
-  }, [holdings, hideDust, sort]);
+  }, [holdings, hidden, hideDust, sort]);
+
+  const hiddenRows = useMemo(() => holdings.filter((h) => hidden.has(h.key)), [holdings, hidden]);
 
   return (
     <div>
@@ -41,6 +49,11 @@ export function HoldingsPanel({ holdings, sparklines }: { holdings: Holding[]; s
             <option value="name">Name</option>
           </select>
         </label>
+        {hiddenRows.length > 0 && (
+          <button className="text-muted hover:text-neon" onClick={() => setShowHidden((v) => !v)}>
+            {showHidden ? 'Hide list' : `Hidden (${hiddenRows.length})`}
+          </button>
+        )}
         <span className="flex-1" />
         <button
           className="border border-border rounded-full px-3 py-1 text-blue hover:border-blue"
@@ -49,7 +62,13 @@ export function HoldingsPanel({ holdings, sparklines }: { holdings: Holding[]; s
           Export CSV
         </button>
       </div>
-      <HoldingsTable holdings={rows} sparklines={sparklines} />
+      <HoldingsTable holdings={rows} sparklines={sparklines} onHide={hideToken} />
+      {showHidden && hiddenRows.length > 0 && (
+        <div className="mt-3">
+          <div className="text-muted text-[10px] uppercase tracking-widest mb-1.5">Hidden tokens</div>
+          <HoldingsTable holdings={hiddenRows} sparklines={sparklines} onHide={unhideToken} hiddenMode />
+        </div>
+      )}
     </div>
   );
 }

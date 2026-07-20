@@ -1,11 +1,17 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HoldingsPanel } from './HoldingsPanel';
+import { useAppStore } from '../state/store';
 import type { Holding } from '../data/types';
 
 const h = (p: Partial<Holding>): Holding => ({
   key: 'k', chainId: 'ethereum', symbol: 'ETH', amount: 1, priceUsd: 1, valueUsd: 5000, change24hPct: 0, iconUrl: null, ...p,
+});
+
+beforeEach(() => {
+  localStorage.clear();
+  useAppStore.setState({ hiddenKeys: [] });
 });
 
 describe('HoldingsPanel', () => {
@@ -20,5 +26,15 @@ describe('HoldingsPanel', () => {
   it('has an Export CSV button', () => {
     render(<HoldingsPanel holdings={[h({})]} />);
     expect(screen.getByRole('button', { name: /export csv/i })).toBeInTheDocument();
+  });
+
+  it('hides a token and lists it under the hidden section', async () => {
+    render(<HoldingsPanel holdings={[h({ key: 'good', symbol: 'GOOD' }), h({ key: 'spam', symbol: 'SPAM' })]} />);
+    await userEvent.click(screen.getByRole('button', { name: /hide SPAM/i }));
+    // SPAM leaves the main list; a "Hidden (1)" toggle appears.
+    expect(screen.getByText('GOOD')).toBeInTheDocument();
+    expect(screen.queryByText('SPAM')).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: /hidden \(1\)/i }));
+    expect(screen.getByText('SPAM')).toBeInTheDocument(); // now shown in the hidden section
   });
 });

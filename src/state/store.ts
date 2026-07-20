@@ -17,6 +17,7 @@ interface AppState {
   byokKey: string;
   view: View;
   alerts: Alert[];
+  hiddenKeys: string[];
   addWallet: (address: string, label: string) => void;
   removeWallet: (address: string) => void;
   toggleChain: (id: ChainId) => void;
@@ -26,6 +27,18 @@ interface AppState {
   addAlert: (symbol: string, direction: 'above' | 'below', target: number) => void;
   removeAlert: (id: string) => void;
   setAlertTriggered: (id: string, triggered: boolean) => void;
+  hideToken: (key: string) => void;
+  unhideToken: (key: string) => void;
+}
+
+const HIDDEN_KEY = 'coldview:hidden';
+function loadHidden(): string[] {
+  try {
+    const v = JSON.parse(localStorage.getItem(HIDDEN_KEY) ?? '[]');
+    return Array.isArray(v) ? v : [];
+  } catch {
+    return [];
+  }
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -35,6 +48,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   byokKey: loadApiKey(),
   view: 'portfolio',
   alerts: loadAlerts(),
+  hiddenKeys: loadHidden(),
 
   addWallet: (address, label) => {
     const family = detectFamily(address);
@@ -84,5 +98,17 @@ export const useAppStore = create<AppState>((set, get) => ({
     const alerts = get().alerts.map((a) => (a.id === id ? { ...a, triggered } : a));
     saveAlerts(alerts);
     set({ alerts });
+  },
+
+  hideToken: (key) => {
+    const hiddenKeys = [...new Set([...get().hiddenKeys, key])];
+    localStorage.setItem(HIDDEN_KEY, JSON.stringify(hiddenKeys));
+    set({ hiddenKeys });
+  },
+
+  unhideToken: (key) => {
+    const hiddenKeys = get().hiddenKeys.filter((k) => k !== key);
+    localStorage.setItem(HIDDEN_KEY, JSON.stringify(hiddenKeys));
+    set({ hiddenKeys });
   },
 }));
