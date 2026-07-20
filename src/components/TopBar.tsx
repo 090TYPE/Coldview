@@ -50,6 +50,18 @@ export function TopBar({ wallets, onAdd, onRemove, apiKey, onApiKey, view, onVie
           <>
             <WalletManager wallets={wallets} onAdd={onAdd} onRemove={onRemove} ensByAddress={ensByAddress} />
             {chains && wallets.length > 0 && <ShareButton wallets={wallets} chains={chains} />}
+            {(() => {
+              const evm = wallets.find((w) => w.family === 'evm')?.address;
+              return evm ? (
+                <button
+                  onClick={() => window.open(`https://revoke.cash/address/${evm}`, '_blank', 'noopener,noreferrer')}
+                  title="Review & revoke token approvals on revoke.cash (opens in a new tab)"
+                  className="text-[12px] px-3 py-1 rounded-full border border-border text-[#9fb0bd] hover:border-danger hover:text-danger"
+                >
+                  🛡 Approvals
+                </button>
+              ) : null;
+            })()}
             <ApiKeyControl value={apiKey} onChange={onApiKey} />
           </>
         )}

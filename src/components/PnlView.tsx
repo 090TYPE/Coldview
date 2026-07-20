@@ -1,6 +1,8 @@
 import { usePnl } from '../state/usePnl';
+import { useGas } from '../state/useGas';
 import { getChain } from '../config/chains';
 import { realizedEventsToCsv } from '../data/taxCsv';
+import type { ChainId as ChainIdT } from '../data/types';
 import { Panel, Label, LoadingSkeleton } from './primitives';
 import type { ChainId, Holding } from '../data/types';
 import type { PnlRow } from '../data/costBasis';
@@ -33,9 +35,26 @@ interface Props {
 
 export function PnlView({ wallets, enabledChains, holdings }: Props) {
   const { data, isLoading } = usePnl(wallets, enabledChains, holdings, true);
+  const { data: gasByChain } = useGas(wallets, enabledChains, true);
   if (isLoading || !data) return <LoadingSkeleton />;
 
   const { rows, realizedTotalUsd, unrealizedTotalUsd, hasPartial, realizedEvents } = data;
+
+  // Value gas in USD using the native-coin price from current holdings (all EVM
+  // natives are 18 decimals). Chains without a priced native holding are skipped.
+  const nativePrice: Record<string, number> = {};
+  for (const h of holdings) {
+    if (h.priceUsd != null && nativePrice[h.symbol.toUpperCase()] === undefined) {
+      nativePrice[h.symbol.toUpperCase()] = h.priceUsd;
+    }
+  }
+  let gasUsd: number | null = null;
+  if (gasByChain) {
+    for (const [chainId, wei] of Object.entries(gasByChain)) {
+      const p = nativePrice[getChain(chainId as ChainIdT).nativeSymbol.toUpperCase()];
+      if (p !== undefined) gasUsd = (gasUsd ?? 0) + (Number(BigInt(wei)) / 1e18) * p;
+    }
+  }
 
   if (rows.length === 0) {
     return <div className="text-muted text-[12px] text-center py-10">No cost-basis history found for these wallets.</div>;
@@ -54,7 +73,7 @@ export function PnlView({ wallets, enabledChains, holdings }: Props) {
           </button>
         </div>
       )}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
         <Panel>
           <Label>Unrealized P&L</Label>
           <div className="text-xl font-bold mt-1"><Signed n={unrealizedTotalUsd} /></div>
@@ -64,8 +83,12 @@ export function PnlView({ wallets, enabledChains, holdings }: Props) {
           <div className="text-xl font-bold mt-1"><Signed n={realizedTotalUsd} /></div>
         </Panel>
         <Panel>
+          <Label>Gas paid</Label>
+          <div className="text-xl font-bold mt-1 text-danger" title="Fees you paid across tracked history">{usd(gasUsd)}</div>
+        </Panel>
+        <Panel>
           <Label>Method</Label>
-          <div className="text-[12px] text-muted mt-1">FIFO cost basis, from on-chain history priced at transfer time.</div>
+          <div className="text-[12px] text-muted mt-1">FIFO cost basis, priced at transfer time. Gas summed from sent txs.</div>
         </Panel>
       </div>
 
