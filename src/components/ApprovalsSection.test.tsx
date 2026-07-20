@@ -31,4 +31,10 @@ describe('ApprovalsSection', () => {
     const link = screen.getByRole('link');
     expect(link).toHaveAttribute('href', `https://revoke.cash/address/${base.owner}`);
   });
+
+  it('shows a loading skeleton while loading', () => {
+    const { container } = render(<ApprovalsSection approvals={[]} holdings={[]} isLoading={true} />);
+    expect(screen.queryByText(/No active token approvals/i)).not.toBeInTheDocument();
+    expect(container.querySelector('table')).toBeNull();
+  });
 });

@@ -44,7 +44,7 @@ export function ApprovalsSection({ approvals, holdings, isLoading }: Props) {
                 <th className="text-left p-2.5 border-b border-border">Spender</th>
                 <th className="text-right p-2.5 border-b border-border">Allowance</th>
                 <th className="text-left p-2.5 border-b border-border">Chain</th>
-                <th className="text-right p-2.5 border-b border-border"></th>
+                <th className="text-right p-2.5 border-b border-border" aria-label="Actions"></th>
               </tr>
             </thead>
             <tbody>
