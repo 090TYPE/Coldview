@@ -36,16 +36,18 @@ export function parseApprovals(raw: unknown, owner: string): TokenApproval[] {
     const t = item?.topics;
     if (!Array.isArray(t) || t.length < 3) continue;
     if ((t[0] ?? '').toLowerCase() !== APPROVAL_TOPIC0) continue;
+    if ((t[1] ?? '').toLowerCase() !== ownerToTopic(ownerLc)) continue;
     if (!item.address || !t[1] || !t[2] || item.data == null) continue;
 
     let value: bigint;
     let block: number;
     try {
       value = BigInt(item.data);
-      block = parseInt(item.blockNumber ?? '0x0', 16);
+      block = parseInt(item.blockNumber ?? '', 16);
     } catch {
       continue;
     }
+    if (Number.isNaN(block)) continue;
 
     const token = item.address.toLowerCase();
     const spender = topicToAddress(t[2]);

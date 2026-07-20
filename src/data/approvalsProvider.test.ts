@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseApprovals, ownerToTopic, APPROVAL_TOPIC0 } from './approvalsProvider';
+import { parseApprovals, ownerToTopic, buildApprovalLogsUrl, APPROVAL_TOPIC0 } from './approvalsProvider';
 
 const OWNER = '0x' + 'a'.repeat(40);
 const OWNER_TOPIC = '0x' + '0'.repeat(24) + 'a'.repeat(40);
@@ -61,5 +61,19 @@ describe('parseApprovals', () => {
   it('skips malformed logs and non-array input', () => {
     expect(parseApprovals(null, OWNER)).toEqual([]);
     expect(parseApprovals([{ topics: [APPROVAL_TOPIC0, OWNER_TOPIC] }], OWNER)).toEqual([]);
+  });
+
+  it('skips logs whose spender topic is null', () => {
+    expect(parseApprovals([{ topics: [APPROVAL_TOPIC0, OWNER_TOPIC, null] }], OWNER)).toEqual([]);
+  });
+});
+
+describe('buildApprovalLogsUrl', () => {
+  it('builds a Blockscout getLogs URL filtered by Approval topic and owner', () => {
+    const url = buildApprovalLogsUrl('https://eth.blockscout.com', OWNER);
+    expect(url).toContain('https://eth.blockscout.com/api?');
+    expect(url).toContain('action=getLogs');
+    expect(url).toContain(`topic0=${APPROVAL_TOPIC0}`);
+    expect(url).toContain(`topic1=${OWNER_TOPIC}`);
   });
 });
