@@ -106,3 +106,13 @@ export interface Nft {
   collection: string;
   imageUrl: string | null;
 }
+
+export interface TokenApproval {
+  chainId: ChainId;
+  owner: string;         // lowercased wallet that granted the approval
+  tokenAddress: string;  // lowercased ERC-20 contract
+  spender: string;       // lowercased approved spender
+  amount: string | null; // decimal string of approved value; null = unlimited
+  blockNumber: number;   // for latest-wins dedupe + recency sort
+  txHash: string;
+}
