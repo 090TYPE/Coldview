@@ -6,6 +6,7 @@ import { useSparklines } from './state/useSparklines';
 import { getSnapshots, type SnapshotPoint } from './data/snapshot';
 import { filterSeriesByPeriod } from './data/period';
 import { readSharedView } from './data/share';
+import { fetchFxRates } from './data/fxProvider';
 import { TopBar } from './components/TopBar';
 import { ChainFilter } from './components/ChainFilter';
 import { HeroPanel } from './components/HeroPanel';
@@ -40,6 +41,10 @@ export default function App() {
   useEffect(() => {
     if (!readOnly) getSnapshots().then(setSeries);
   }, [data?.totalValueUsd, readOnly]);
+
+  useEffect(() => {
+    fetchFxRates().then(store.setFxRates);
+  }, [store.setFxRates]);
 
   const exitShared = () => {
     window.location.href = window.location.pathname;

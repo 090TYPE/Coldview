@@ -1,10 +1,8 @@
 import { getChain } from '../config/chains';
 import { TokenIcon } from './TokenIcon';
 import { Sparkline } from './Sparkline';
+import { useMoney } from '../state/useMoney';
 import type { Holding, TokenKey } from '../data/types';
-
-const usd = (n: number | null) =>
-  n === null ? '—' : n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
 const pct = (n: number | null) => (n === null ? '' : `${n >= 0 ? '▲' : '▼'} ${Math.abs(n).toFixed(1)}%`);
 
@@ -16,6 +14,7 @@ interface TableProps {
 }
 
 export function HoldingsTable({ holdings, sparklines, onHide, hiddenMode }: TableProps) {
+  const money = useMoney();
   return (
     <div className="bg-panel border border-border rounded-[10px] overflow-x-auto">
       <table className="w-full text-[12.5px]">
@@ -46,8 +45,8 @@ export function HoldingsTable({ holdings, sparklines, onHide, hiddenMode }: Tabl
                 </span>
               </td>
               <td className="p-2.5 border-b border-[#0f171e] text-right">{h.amount.toLocaleString('en-US', { maximumFractionDigits: 4 })}</td>
-              <td className="p-2.5 border-b border-[#0f171e] text-right">{usd(h.priceUsd)}</td>
-              <td className="p-2.5 border-b border-[#0f171e] text-right">{usd(h.valueUsd)}</td>
+              <td className="p-2.5 border-b border-[#0f171e] text-right">{money(h.priceUsd)}</td>
+              <td className="p-2.5 border-b border-[#0f171e] text-right">{money(h.valueUsd)}</td>
               <td className="p-2.5 border-b border-[#0f171e] text-right">
                 <span className="inline-flex justify-end w-full"><Sparkline data={sparklines?.[h.key]} /></span>
               </td>

@@ -18,6 +18,8 @@ interface AppState {
   view: View;
   alerts: Alert[];
   hiddenKeys: string[];
+  currency: string;
+  fxRates: Record<string, number>;
   addWallet: (address: string, label: string) => void;
   removeWallet: (address: string) => void;
   toggleChain: (id: ChainId) => void;
@@ -29,6 +31,8 @@ interface AppState {
   setAlertTriggered: (id: string, triggered: boolean) => void;
   hideToken: (key: string) => void;
   unhideToken: (key: string) => void;
+  setCurrency: (c: string) => void;
+  setFxRates: (r: Record<string, number>) => void;
 }
 
 const HIDDEN_KEY = 'coldview:hidden';
@@ -49,6 +53,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   view: 'portfolio',
   alerts: loadAlerts(),
   hiddenKeys: loadHidden(),
+  currency: localStorage.getItem('coldview:currency') ?? 'USD',
+  fxRates: { USD: 1 },
 
   addWallet: (address, label) => {
     const family = detectFamily(address);
@@ -111,4 +117,11 @@ export const useAppStore = create<AppState>((set, get) => ({
     localStorage.setItem(HIDDEN_KEY, JSON.stringify(hiddenKeys));
     set({ hiddenKeys });
   },
+
+  setCurrency: (currency) => {
+    localStorage.setItem('coldview:currency', currency);
+    set({ currency });
+  },
+
+  setFxRates: (fxRates) => set({ fxRates }),
 }));

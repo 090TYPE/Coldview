@@ -2,6 +2,7 @@ import { usePnl } from '../state/usePnl';
 import { useGas } from '../state/useGas';
 import { getChain } from '../config/chains';
 import { realizedEventsToCsv } from '../data/taxCsv';
+import { useMoney } from '../state/useMoney';
 import type { ChainId as ChainIdT } from '../data/types';
 import { Panel, Label, LoadingSkeleton } from './primitives';
 import type { ChainId, Holding } from '../data/types';
@@ -17,14 +18,12 @@ function downloadCsv(filename: string, text: string) {
   URL.revokeObjectURL(url);
 }
 
-const usd = (n: number | null) =>
-  n === null ? '—' : n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-
 function Signed({ n }: { n: number | null }) {
+  const money = useMoney();
   if (n === null) return <span className="text-muted">—</span>;
   const cls = n > 0 ? 'text-neon' : n < 0 ? 'text-danger' : 'text-muted';
   const sign = n > 0 ? '+' : '';
-  return <span className={cls}>{sign}{usd(n)}</span>;
+  return <span className={cls}>{sign}{money(n)}</span>;
 }
 
 interface Props {
@@ -34,6 +33,7 @@ interface Props {
 }
 
 export function PnlView({ wallets, enabledChains, holdings }: Props) {
+  const money = useMoney();
   const { data, isLoading } = usePnl(wallets, enabledChains, holdings, true);
   const { data: gasByChain } = useGas(wallets, enabledChains, true);
   if (isLoading || !data) return <LoadingSkeleton />;
@@ -84,7 +84,7 @@ export function PnlView({ wallets, enabledChains, holdings }: Props) {
         </Panel>
         <Panel>
           <Label>Gas paid</Label>
-          <div className="text-xl font-bold mt-1 text-danger" title="Fees you paid across tracked history">{usd(gasUsd)}</div>
+          <div className="text-xl font-bold mt-1 text-danger" title="Fees you paid across tracked history">{money(gasUsd)}</div>
         </Panel>
         <Panel>
           <Label>Method</Label>
@@ -123,8 +123,8 @@ export function PnlView({ wallets, enabledChains, holdings }: Props) {
                   </span>
                 </td>
                 <td className="p-2.5 border-b border-[#0f171e] text-right">{r.currentAmount.toLocaleString('en-US', { maximumFractionDigits: 4 })}</td>
-                <td className="p-2.5 border-b border-[#0f171e] text-right">{usd(r.currentValueUsd)}</td>
-                <td className="p-2.5 border-b border-[#0f171e] text-right text-muted">{usd(r.costBasisUsd)}</td>
+                <td className="p-2.5 border-b border-[#0f171e] text-right">{money(r.currentValueUsd)}</td>
+                <td className="p-2.5 border-b border-[#0f171e] text-right text-muted">{money(r.costBasisUsd)}</td>
                 <td className="p-2.5 border-b border-[#0f171e] text-right"><Signed n={r.unrealizedPnlUsd} /></td>
                 <td className="p-2.5 border-b border-[#0f171e] text-right"><Signed n={r.realizedPnlUsd || null} /></td>
               </tr>

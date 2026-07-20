@@ -1,6 +1,7 @@
 import { WalletManager } from './WalletManager';
 import { ApiKeyControl } from './ApiKeyControl';
 import { ShareButton } from './ShareButton';
+import { CurrencySelect } from './CurrencySelect';
 import type { ChainId } from '../data/types';
 import type { Wallet } from '../data/walletStore';
 import type { View } from '../state/store';
@@ -37,6 +38,7 @@ export function TopBar({ wallets, onAdd, onRemove, apiKey, onApiKey, view, onVie
         <div className="flex gap-1">{tab('portfolio', 'Portfolio')}{tab('activity', 'Activity')}{tab('nfts', 'NFTs')}{tab('pnl', 'P&L')}{tab('alerts', '🔔')}</div>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
+        <CurrencySelect />
         {readOnly ? (
           <>
             <span className="text-[11px] px-2.5 py-1 rounded-full border border-blue text-blue">Shared · read-only</span>
