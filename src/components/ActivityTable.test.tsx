@@ -17,6 +17,12 @@ describe('ActivityTable', () => {
     expect(screen.getByText('$3,120')).toBeInTheDocument();
   });
 
+  it('labels each row by type (receive / send)', () => {
+    render(<ActivityTable rows={rows} />);
+    expect(screen.getByText('receive')).toBeInTheDocument(); // the incoming USDC
+    expect(screen.getByText('send')).toBeInTheDocument();    // the outgoing ETH
+  });
+
   it('renders the token logo when a row has an iconUrl', () => {
     const { container } = render(<ActivityTable rows={rows} />);
     expect(container.querySelector('img[src="https://assets.example/usdc.png"]')).not.toBeNull();

@@ -15,10 +15,8 @@ interface Props {
 export function ActivityView({ wallets, enabledChains }: Props) {
   const { data, isLoading } = useActivity(wallets, enabledChains, true);
 
-  const flows = useMemo(() => {
-    const owned = new Set(wallets.map((w) => w.address.toLowerCase()));
-    return computeRecentFlows(data ?? [], owned);
-  }, [data, wallets]);
+  const owned = useMemo(() => new Set(wallets.map((w) => w.address.toLowerCase())), [wallets]);
+  const flows = useMemo(() => computeRecentFlows(data ?? [], owned), [data, owned]);
 
   if (isLoading || !data) return <LoadingSkeleton />;
 
@@ -30,7 +28,7 @@ export function ActivityView({ wallets, enabledChains }: Props) {
         totalOut={flows.totalOut}
         totalNet={flows.totalNet}
       />
-      <ActivityTable rows={data} />
+      <ActivityTable rows={data} owned={owned} />
     </>
   );
 }

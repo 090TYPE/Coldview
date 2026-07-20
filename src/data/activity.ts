@@ -1,6 +1,35 @@
 import { toAmount } from './types';
 import { cacheKeyFor } from './historicalPrice';
-import type { Transfer, ActivityRow, FlowRow } from './types';
+import type { ChainId, Transfer, ActivityRow, FlowRow } from './types';
+
+export type ActivityLabel = 'swap' | 'send' | 'receive' | 'self';
+
+// A transaction that both sends and receives (same txHash on the same chain) is
+// a swap. Used to label Activity rows without any extra network calls.
+export function buildTxKinds(
+  rows: { chainId: ChainId; txHash: string; direction: 'in' | 'out' }[],
+): Map<string, { in: boolean; out: boolean }> {
+  const m = new Map<string, { in: boolean; out: boolean }>();
+  for (const r of rows) {
+    const key = `${r.chainId}:${r.txHash}`;
+    const e = m.get(key) ?? { in: false, out: false };
+    if (r.direction === 'in') e.in = true;
+    else e.out = true;
+    m.set(key, e);
+  }
+  return m;
+}
+
+export function activityLabel(
+  row: { chainId: ChainId; txHash: string; direction: 'in' | 'out'; counterparty: string },
+  txKinds: Map<string, { in: boolean; out: boolean }>,
+  owned: Set<string>,
+): ActivityLabel {
+  if (owned.has(row.counterparty)) return 'self';
+  const k = txKinds.get(`${row.chainId}:${row.txHash}`);
+  if (k?.in && k?.out) return 'swap';
+  return row.direction === 'in' ? 'receive' : 'send';
+}
 
 export function buildActivity(transfers: Transfer[], unitUsdByCacheKey: Map<string, number>): ActivityRow[] {
   return transfers.map((t) => {
