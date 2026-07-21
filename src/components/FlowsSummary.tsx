@@ -37,8 +37,8 @@ export function FlowsSummary({ perToken, totalIn, totalOut, totalNet }: Props) {
       {perToken.length > 0 && (
         <div className="mt-3 text-[12px]">
           {perToken.slice(0, 6).map((r) => (
-            <div key={r.symbol} className="flex justify-between py-[3px] border-b border-[#0f171e] last:border-0">
-              <span className="font-bold text-[#e6eef3]">{r.symbol}</span>
+            <div key={r.symbol} className="flex justify-between py-[3px] border-b border-row last:border-0">
+              <span className="font-bold text-heading">{r.symbol}</span>
               <span className="text-muted">in {usd(r.inUsd)} · out {usd(r.outUsd)} ·
                 <span className={r.netUsd >= 0 ? 'text-neon' : 'text-danger'}> {r.netUsd >= 0 ? '+' : '−'}{usd(Math.abs(r.netUsd))}</span>
               </span>

@@ -73,7 +73,7 @@ export default function App() {
         onExitShared={exitShared}
       />
       {readOnly && (
-        <div className="mb-3 text-[12px] px-3 py-2 rounded-lg border border-blue/40 bg-blue/5 text-[#9fb0bd]">
+        <div className="mb-3 text-[12px] px-3 py-2 rounded-lg border border-blue/40 bg-blue/5 text-muted">
           You're viewing a <span className="text-blue">shared, read-only</span> portfolio. Data is fetched live on your device; nothing is saved.
         </div>
       )}

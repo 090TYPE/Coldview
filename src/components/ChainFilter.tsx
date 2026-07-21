@@ -13,7 +13,7 @@ export function ChainFilter({ enabled, onToggle }: { enabled: ChainId[]; onToggl
             key={c.id}
             onClick={() => onToggle(c.id)}
             aria-pressed={on}
-            className={`text-[11px] px-2.5 py-1 rounded-full border ${on ? 'border-neon text-neon bg-neon/10' : 'border-border text-[#9fb0bd]'}`}
+            className={`text-[11px] px-2.5 py-1 rounded-full border ${on ? 'border-neon text-neon bg-neon/10' : 'border-border text-muted'}`}
           >
             {c.name}
           </button>

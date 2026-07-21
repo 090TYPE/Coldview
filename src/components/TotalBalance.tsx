@@ -7,7 +7,7 @@ export function TotalBalance({ total, change24h, walletCount }: { total: number;
   return (
     <div>
       <Label>{`Total balance · ${walletCount} wallet${walletCount === 1 ? '' : 's'}`}</Label>
-      <div className="text-[34px] font-extrabold text-[#eafff6] tracking-tight">
+      <div className="text-[34px] font-extrabold text-heading tracking-tight">
         {money(total, 2)}
       </div>
       <div className={`text-[13px] font-bold mt-1 ${up ? 'text-neon' : 'text-danger'}`}>

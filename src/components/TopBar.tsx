@@ -2,6 +2,7 @@ import { WalletManager } from './WalletManager';
 import { ApiKeyControl } from './ApiKeyControl';
 import { ShareButton } from './ShareButton';
 import { CurrencySelect } from './CurrencySelect';
+import { ThemeToggle } from './ThemeToggle';
 import type { ChainId } from '../data/types';
 import type { Wallet } from '../data/walletStore';
 import type { View } from '../state/store';
@@ -25,7 +26,7 @@ export function TopBar({ wallets, onAdd, onRemove, apiKey, onApiKey, view, onVie
     <button
       onClick={() => onView(v)}
       className={`text-[12px] px-3 py-1 rounded-full border ${
-        view === v ? 'border-neon text-neon bg-neon/10' : 'border-border text-[#9fb0bd]'
+        view === v ? 'border-neon text-neon bg-neon/10' : 'border-border text-muted'
       }`}
     >
       {label}
@@ -34,16 +35,17 @@ export function TopBar({ wallets, onAdd, onRemove, apiKey, onApiKey, view, onVie
   return (
     <div className="flex items-center justify-between mb-3.5 gap-4 flex-wrap">
       <div className="flex items-center gap-3">
-        <div className="font-extrabold text-[#eafff6] tracking-wide">◈ Coldview<span className="text-neon">.</span></div>
+        <div className="font-extrabold text-heading tracking-wide">◈ Coldview<span className="text-neon">.</span></div>
         <div className="flex gap-1">{tab('portfolio', 'Portfolio')}{tab('activity', 'Activity')}{tab('nfts', 'NFTs')}{tab('pnl', 'P&L')}{tab('alerts', '🔔')}</div>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
+        <ThemeToggle />
         <CurrencySelect />
         {readOnly ? (
           <>
             <span className="text-[11px] px-2.5 py-1 rounded-full border border-blue text-blue">Shared · read-only</span>
             {onExitShared && (
-              <button onClick={onExitShared} className="text-[12px] px-3 py-1 rounded-full border border-border text-[#9fb0bd] hover:border-neon hover:text-neon">
+              <button onClick={onExitShared} className="text-[12px] px-3 py-1 rounded-full border border-border text-muted hover:border-neon hover:text-neon">
                 Exit to my portfolio
               </button>
             )}
@@ -58,7 +60,7 @@ export function TopBar({ wallets, onAdd, onRemove, apiKey, onApiKey, view, onVie
                 <button
                   onClick={() => window.open(`https://revoke.cash/address/${evm}`, '_blank', 'noopener,noreferrer')}
                   title="Review & revoke token approvals on revoke.cash (opens in a new tab)"
-                  className="text-[12px] px-3 py-1 rounded-full border border-border text-[#9fb0bd] hover:border-danger hover:text-danger"
+                  className="text-[12px] px-3 py-1 rounded-full border border-border text-muted hover:border-danger hover:text-danger"
                 >
                   🛡 Approvals
                 </button>

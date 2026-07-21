@@ -2,13 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Theme tokens as space-separated RGB channels so Tailwind opacity modifiers
+   (e.g. bg-neon/10) keep working via rgb(var(--x) / <alpha-value>). */
+:root {
+  --bg: 7 10 14;
+  --grid: 13 20 27;
+  --panel: 11 18 24;
+  --border: 22 33 43;
+  --muted: 86 107 122;
+  --text: 201 212 220;
+  --heading: 230 238 243;
+  --row: 15 23 30;
+  --neon: 34 230 164;
+  --blue: 58 160 255;
+  --amber: 255 176 32;
+  --violet: 138 92 255;
+  --danger: 255 92 114;
+}
+
+:root[data-theme='light'] {
+  --bg: 245 247 250;
+  --grid: 226 231 238;
+  --panel: 255 255 255;
+  --border: 213 221 230;
+  --muted: 107 122 136;
+  --text: 31 41 51;
+  --heading: 11 26 36;
+  --row: 235 240 245;
+  --neon: 16 155 118;
+  --blue: 37 99 235;
+  --amber: 180 83 9;
+  --violet: 124 58 237;
+  --danger: 220 38 38;
+}
+
 body {
   margin: 0;
-  background-color: #070a0e;
-  color: #c9d4dc;
+  background-color: rgb(var(--bg));
+  color: rgb(var(--text));
   font-family: 'Fira Code', ui-monospace, monospace;
   background-image:
-    linear-gradient(#0d141b 1px, transparent 1px),
-    linear-gradient(90deg, #0d141b 1px, transparent 1px);
+    linear-gradient(rgb(var(--grid)) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--grid)) 1px, transparent 1px);
   background-size: 28px 28px;
 }

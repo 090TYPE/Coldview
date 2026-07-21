@@ -1,20 +1,28 @@
 /** @type {import('tailwindcss').Config} */
+
+// Colors reference CSS variables (see src/index.css) so a single [data-theme]
+// switch re-themes the whole app. The rgb(var(--x) / <alpha-value>) form keeps
+// Tailwind opacity modifiers (e.g. bg-neon/10) working.
+const token = (name) => `rgb(var(--${name}) / <alpha-value>)`;
+
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        bg: '#070a0e',
-        grid: '#0d141b',
-        panel: '#0b1218',
-        border: '#16212b',
-        muted: '#566b7a',
-        text: '#c9d4dc',
-        neon: '#22e6a4',
-        blue: '#3aa0ff',
-        amber: '#ffb020',
-        violet: '#8a5cff',
-        danger: '#ff5c72',
+        bg: token('bg'),
+        grid: token('grid'),
+        panel: token('panel'),
+        border: token('border'),
+        muted: token('muted'),
+        text: token('text'),
+        heading: token('heading'),
+        row: token('row'),
+        neon: token('neon'),
+        blue: token('blue'),
+        amber: token('amber'),
+        violet: token('violet'),
+        danger: token('danger'),
       },
       fontFamily: {
         mono: ['Fira Code', 'ui-monospace', 'monospace'],

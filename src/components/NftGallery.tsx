@@ -20,10 +20,10 @@ function NftCard({ nft }: { nft: Nft }) {
         )}
       </div>
       <div className="p-2.5">
-        <div className="text-[12.5px] font-bold text-[#e6eef3] truncate" title={nft.name}>{nft.name}</div>
+        <div className="text-[12.5px] font-bold text-heading truncate" title={nft.name}>{nft.name}</div>
         <div className="flex items-center justify-between mt-1">
           <span className="text-[11px] text-muted truncate" title={nft.collection}>{nft.collection}</span>
-          <span className="text-[9px] px-1.5 py-0.5 rounded border border-border text-[#8ba0ad] shrink-0 ml-1">{getChain(nft.chainId).name}</span>
+          <span className="text-[9px] px-1.5 py-0.5 rounded border border-border text-muted shrink-0 ml-1">{getChain(nft.chainId).name}</span>
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@ export function TokenIcon({ iconUrl, symbol, size = 20 }: Props) {
   const letter = (symbol || '?').slice(0, 1).toUpperCase();
   return (
     <span
-      className="rounded-full bg-[#16212b] text-[#8ba0ad] inline-flex items-center justify-center shrink-0 font-bold"
+      className="rounded-full bg-[#16212b] text-muted inline-flex items-center justify-center shrink-0 font-bold"
       style={{ ...box, fontSize: size * 0.5 }}
       aria-hidden
     >

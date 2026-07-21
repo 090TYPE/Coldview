@@ -20,7 +20,7 @@ export function ShareButton({ wallets, chains }: { wallets: Wallet[]; chains: Ch
     <button
       onClick={share}
       title="Copy a read-only link to this portfolio (the link reveals the wallet addresses)"
-      className="text-[12px] px-3 py-1 rounded-full border border-border text-[#9fb0bd] hover:border-neon hover:text-neon"
+      className="text-[12px] px-3 py-1 rounded-full border border-border text-muted hover:border-neon hover:text-neon"
     >
       {copied ? '✓ Link copied' : '↗ Share'}
     </button>

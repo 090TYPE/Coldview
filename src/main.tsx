@@ -3,7 +3,11 @@ import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { registerSW } from 'virtual:pwa-register';
 import App from './App';
+import { applyTheme, loadTheme } from './data/theme';
 import './index.css';
+
+// Set the saved theme before first paint to avoid a flash of the wrong colors.
+applyTheme(loadTheme());
 
 // Installable + offline: auto-update the service worker in the background.
 registerSW({ immediate: true });

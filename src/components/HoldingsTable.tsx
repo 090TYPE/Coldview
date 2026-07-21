@@ -34,7 +34,7 @@ export function HoldingsTable({ holdings, sparklines, onHide, hiddenMode, onSele
         <tbody>
           {holdings.map((h) => (
             <tr key={h.key}>
-              <td className="p-2.5 border-b border-[#0f171e] font-bold text-[#e6eef3]">
+              <td className="p-2.5 border-b border-row font-bold text-heading">
                 {onSelect ? (
                   <button className="flex items-center gap-2 hover:text-neon" onClick={() => onSelect(h)} title={`${h.symbol} details`}>
                     <TokenIcon iconUrl={h.iconUrl} symbol={h.symbol} />
@@ -47,22 +47,22 @@ export function HoldingsTable({ holdings, sparklines, onHide, hiddenMode, onSele
                   </div>
                 )}
               </td>
-              <td className="p-2.5 border-b border-[#0f171e]">
-                <span className="text-[9px] px-1.5 py-0.5 rounded border border-border text-[#8ba0ad]">
+              <td className="p-2.5 border-b border-row">
+                <span className="text-[9px] px-1.5 py-0.5 rounded border border-border text-muted">
                   {getChain(h.chainId).name}
                 </span>
               </td>
-              <td className="p-2.5 border-b border-[#0f171e] text-right">{h.amount.toLocaleString('en-US', { maximumFractionDigits: 4 })}</td>
-              <td className="p-2.5 border-b border-[#0f171e] text-right">{money(h.priceUsd)}</td>
-              <td className="p-2.5 border-b border-[#0f171e] text-right">{money(h.valueUsd)}</td>
-              <td className="p-2.5 border-b border-[#0f171e] text-right">
+              <td className="p-2.5 border-b border-row text-right">{h.amount.toLocaleString('en-US', { maximumFractionDigits: 4 })}</td>
+              <td className="p-2.5 border-b border-row text-right">{money(h.priceUsd)}</td>
+              <td className="p-2.5 border-b border-row text-right">{money(h.valueUsd)}</td>
+              <td className="p-2.5 border-b border-row text-right">
                 <span className="inline-flex justify-end w-full"><Sparkline data={sparklines?.[h.key]} /></span>
               </td>
-              <td className={`p-2.5 border-b border-[#0f171e] text-right ${h.change24hPct === null ? 'text-muted' : h.change24hPct >= 0 ? 'text-neon' : 'text-danger'}`}>
+              <td className={`p-2.5 border-b border-row text-right ${h.change24hPct === null ? 'text-muted' : h.change24hPct >= 0 ? 'text-neon' : 'text-danger'}`}>
                 {pct(h.change24hPct)}
               </td>
               {onHide && (
-                <td className="p-2.5 border-b border-[#0f171e] text-right">
+                <td className="p-2.5 border-b border-row text-right">
                   <button
                     aria-label={`${hiddenMode ? 'unhide' : 'hide'} ${h.symbol}`}
                     title={hiddenMode ? 'Show again' : 'Hide (spam / unwanted)'}

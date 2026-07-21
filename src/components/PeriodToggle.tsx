@@ -11,7 +11,7 @@ export function PeriodToggle({ value, onChange }: { value: Period; onChange: (p:
           onClick={() => onChange(p)}
           aria-pressed={p === value}
           className={`text-[11px] px-2 py-0.5 rounded-full border ${
-            p === value ? 'border-neon text-neon bg-neon/10' : 'border-border text-[#9fb0bd]'
+            p === value ? 'border-neon text-neon bg-neon/10' : 'border-border text-muted'
           }`}
         >
           {p}

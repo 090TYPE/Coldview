@@ -119,20 +119,20 @@ export function PnlView({ wallets, enabledChains, holdings }: Props) {
             <tbody>
               {rows.map((r: PnlRow) => (
                 <tr key={r.key}>
-                  <td className="p-2.5 border-b border-[#0f171e] font-bold text-[#e6eef3]">
+                  <td className="p-2.5 border-b border-row font-bold text-heading">
                     <span className="flex items-center gap-2">
                       {r.symbol}
                       {!r.complete && (
                         <span className="text-[9px] px-1.5 py-0.5 rounded border border-[#ffb020]/40 text-[#c9b78a]">partial</span>
                       )}
-                      <span className="text-[9px] px-1.5 py-0.5 rounded border border-border text-[#8ba0ad]">{getChain(r.chainId).name}</span>
+                      <span className="text-[9px] px-1.5 py-0.5 rounded border border-border text-muted">{getChain(r.chainId).name}</span>
                     </span>
                   </td>
-                  <td className="p-2.5 border-b border-[#0f171e] text-right">{r.currentAmount.toLocaleString('en-US', { maximumFractionDigits: 4 })}</td>
-                  <td className="p-2.5 border-b border-[#0f171e] text-right">{money(r.currentValueUsd)}</td>
-                  <td className="p-2.5 border-b border-[#0f171e] text-right text-muted">{money(r.costBasisUsd)}</td>
-                  <td className="p-2.5 border-b border-[#0f171e] text-right"><Signed n={r.unrealizedPnlUsd} /></td>
-                  <td className="p-2.5 border-b border-[#0f171e] text-right"><Signed n={r.realizedPnlUsd || null} /></td>
+                  <td className="p-2.5 border-b border-row text-right">{r.currentAmount.toLocaleString('en-US', { maximumFractionDigits: 4 })}</td>
+                  <td className="p-2.5 border-b border-row text-right">{money(r.currentValueUsd)}</td>
+                  <td className="p-2.5 border-b border-row text-right text-muted">{money(r.costBasisUsd)}</td>
+                  <td className="p-2.5 border-b border-row text-right"><Signed n={r.unrealizedPnlUsd} /></td>
+                  <td className="p-2.5 border-b border-row text-right"><Signed n={r.realizedPnlUsd || null} /></td>
                 </tr>
               ))}
             </tbody>

@@ -54,17 +54,17 @@ export function ApprovalsSection({ approvals, holdings, isLoading }: Props) {
                   shortAddr(a.tokenAddress);
                 return (
                   <tr key={`${a.chainId}:${a.owner}:${a.tokenAddress}:${a.spender}`}>
-                    <td className="p-2.5 border-b border-[#0f171e] font-bold text-[#e6eef3]">{symbol}</td>
-                    <td className="p-2.5 border-b border-[#0f171e] font-mono text-[11px] text-muted">{shortAddr(a.spender)}</td>
-                    <td className="p-2.5 border-b border-[#0f171e] text-right">
+                    <td className="p-2.5 border-b border-row font-bold text-heading">{symbol}</td>
+                    <td className="p-2.5 border-b border-row font-mono text-[11px] text-muted">{shortAddr(a.spender)}</td>
+                    <td className="p-2.5 border-b border-row text-right">
                       {a.amount === null ? (
                         <span className="text-[10px] px-1.5 py-0.5 rounded border border-danger/50 text-danger">Unlimited</span>
                       ) : (
                         <span className="text-muted" title={`Approved value: ${a.amount} (raw, no decimals)`}>Limited</span>
                       )}
                     </td>
-                    <td className="p-2.5 border-b border-[#0f171e] text-muted">{getChain(a.chainId).name}</td>
-                    <td className="p-2.5 border-b border-[#0f171e] text-right">
+                    <td className="p-2.5 border-b border-row text-muted">{getChain(a.chainId).name}</td>
+                    <td className="p-2.5 border-b border-row text-right">
                       <a
                         className="text-blue hover:underline"
                         href={`https://revoke.cash/address/${a.owner}`}

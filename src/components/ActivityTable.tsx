@@ -39,28 +39,28 @@ export function ActivityTable({ rows, owned }: { rows: ActivityRow[]; owned?: Se
         <tbody>
           {rows.map((r) => (
             <tr key={`${r.chainId}:${r.txHash}:${r.contract ?? 'native'}:${r.direction}`}>
-              <td className="p-2.5 border-b border-[#0f171e] text-muted">{when(r.timestamp)}</td>
-              <td className="p-2.5 border-b border-[#0f171e]">
+              <td className="p-2.5 border-b border-row text-muted">{when(r.timestamp)}</td>
+              <td className="p-2.5 border-b border-row">
                 {(() => {
                   const label = activityLabel(r, txKinds, ownedSet);
                   return <span className={`text-[9px] uppercase tracking-wide px-1.5 py-0.5 rounded border ${LABEL_STYLE[label]}`}>{label}</span>;
                 })()}
               </td>
-              <td className={`p-2.5 border-b border-[#0f171e] ${r.direction === 'in' ? 'text-neon' : 'text-danger'}`}>
+              <td className={`p-2.5 border-b border-row ${r.direction === 'in' ? 'text-neon' : 'text-danger'}`}>
                 {r.direction === 'in' ? '▼ in' : '▲ out'}
               </td>
-              <td className="p-2.5 border-b border-[#0f171e] font-bold text-[#e6eef3]">
+              <td className="p-2.5 border-b border-row font-bold text-heading">
                 <span className="flex items-center gap-2">
                   <TokenIcon iconUrl={r.iconUrl ?? null} symbol={r.symbol} size={16} />
                   {r.symbol}
                 </span>
               </td>
-              <td className="p-2.5 border-b border-[#0f171e] text-right">
+              <td className="p-2.5 border-b border-row text-right">
                 {toAmount(r.rawAmount, r.decimals).toLocaleString('en-US', { maximumFractionDigits: 4 })}
               </td>
-              <td className="p-2.5 border-b border-[#0f171e] text-right">{usd(r.usdAtTime)}</td>
-              <td className="p-2.5 border-b border-[#0f171e]">
-                <span className="text-[9px] px-1.5 py-0.5 rounded border border-border text-[#8ba0ad]">{getChain(r.chainId).name}</span>
+              <td className="p-2.5 border-b border-row text-right">{usd(r.usdAtTime)}</td>
+              <td className="p-2.5 border-b border-row">
+                <span className="text-[9px] px-1.5 py-0.5 rounded border border-border text-muted">{getChain(r.chainId).name}</span>
               </td>
             </tr>
           ))}

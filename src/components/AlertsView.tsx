@@ -72,10 +72,10 @@ export function AlertsView({ holdings }: { holdings: Holding[] }) {
               <tbody>
                 {alerts.map((a) => (
                   <tr key={a.id}>
-                    <td className="p-2.5 border-b border-[#0f171e] font-bold text-[#e6eef3]">{a.symbol}</td>
-                    <td className="p-2.5 border-b border-[#0f171e]">{a.direction} {usd(a.target)}</td>
-                    <td className="p-2.5 border-b border-[#0f171e] text-right">{usd(priceOf(a.symbol))}</td>
-                    <td className="p-2.5 border-b border-[#0f171e]">
+                    <td className="p-2.5 border-b border-row font-bold text-heading">{a.symbol}</td>
+                    <td className="p-2.5 border-b border-row">{a.direction} {usd(a.target)}</td>
+                    <td className="p-2.5 border-b border-row text-right">{usd(priceOf(a.symbol))}</td>
+                    <td className="p-2.5 border-b border-row">
                       {a.triggered ? (
                         <span className="inline-flex items-center gap-2">
                           <span className="text-[10px] px-1.5 py-0.5 rounded border border-neon text-neon">🔔 triggered</span>
@@ -85,7 +85,7 @@ export function AlertsView({ holdings }: { holdings: Holding[] }) {
                         <span className="text-[10px] px-1.5 py-0.5 rounded border border-border text-muted">armed</span>
                       )}
                     </td>
-                    <td className="p-2.5 border-b border-[#0f171e] text-right">
+                    <td className="p-2.5 border-b border-row text-right">
                       <button aria-label={`remove ${a.symbol} alert`} className="text-muted hover:text-danger" onClick={() => removeAlert(a.id)}>×</button>
                     </td>
                   </tr>

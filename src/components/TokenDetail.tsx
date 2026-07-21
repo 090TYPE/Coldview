@@ -57,7 +57,7 @@ export function TokenDetail({ holding, sparkline, onClose }: Props) {
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-[#e6eef3] text-lg">{holding.symbol}</span>
+            <span className="font-extrabold text-heading text-lg">{holding.symbol}</span>
             <span className="text-[10px] px-1.5 py-0.5 rounded border border-border text-muted">{getChain(holding.chainId).name}</span>
           </div>
           <button aria-label="Close" onClick={onClose} className="text-muted hover:text-neon text-lg leading-none">×</button>
@@ -69,7 +69,7 @@ export function TokenDetail({ holding, sparkline, onClose }: Props) {
           <span className="text-muted">Price</span>
           <span className="text-right">{money(holding.priceUsd)}</span>
           <span className="text-muted">Value</span>
-          <span className="text-right font-bold text-[#e6eef3]">{money(holding.valueUsd)}</span>
+          <span className="text-right font-bold text-heading">{money(holding.valueUsd)}</span>
         </div>
 
         <div className="mb-3 flex justify-center">

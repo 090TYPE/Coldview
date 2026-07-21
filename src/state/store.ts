@@ -6,6 +6,7 @@ import {
   loadWallets, saveWallets, loadApiKey, saveApiKey, type Wallet,
 } from '../data/walletStore';
 import { loadAlerts, saveAlerts, type Alert } from '../data/alerts';
+import { loadTheme, saveTheme, applyTheme, type Theme } from '../data/theme';
 
 export type Period = '24h' | '7d' | '30d' | 'all';
 export type View = 'portfolio' | 'activity' | 'nfts' | 'pnl' | 'alerts';
@@ -20,6 +21,7 @@ interface AppState {
   hiddenKeys: string[];
   currency: string;
   fxRates: Record<string, number>;
+  theme: Theme;
   addWallet: (address: string, label: string) => void;
   removeWallet: (address: string) => void;
   toggleChain: (id: ChainId) => void;
@@ -33,6 +35,7 @@ interface AppState {
   unhideToken: (key: string) => void;
   setCurrency: (c: string) => void;
   setFxRates: (r: Record<string, number>) => void;
+  toggleTheme: () => void;
 }
 
 const HIDDEN_KEY = 'coldview:hidden';
@@ -55,6 +58,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   hiddenKeys: loadHidden(),
   currency: localStorage.getItem('coldview:currency') ?? 'USD',
   fxRates: { USD: 1 },
+  theme: loadTheme(),
 
   addWallet: (address, label) => {
     const family = detectFamily(address);
@@ -124,4 +128,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   setFxRates: (fxRates) => set({ fxRates }),
+
+  toggleTheme: () => {
+    const theme: Theme = get().theme === 'dark' ? 'light' : 'dark';
+    saveTheme(theme);
+    applyTheme(theme);
+    set({ theme });
+  },
 }));
