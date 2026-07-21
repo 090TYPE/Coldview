@@ -45,11 +45,15 @@ and explore. Nothing you enter is sent anywhere — see [Privacy](#-privacy) bel
 | 🧾 | **Tax report** — one-click capital-gains CSV (Form 8949 style) |
 | ⛽ | **Gas paid** — total fees you've spent |
 | 🔔 | **Price alerts** — browser notifications while the app is open |
-| 🛡 | **Approvals** — jump to revoke.cash to review token allowances |
+| 🛡 | **Token approvals** — see who can spend your ERC-20s right in the P&L view, unlimited allowances flagged, with a per-row jump to revoke.cash |
+| 🪟 | **Token details** — click any holding for balance, price and quick links (explorer, Dexscreener) |
+| 🔎 | **Search** holdings by symbol or chain |
+| 🎨 | **Light / dark theme** — one click, remembered across visits |
+| 🔄 | **Manual refresh** with an "updated N ago" freshness indicator |
 | 📈 | **7-day sparklines**, 🪙 token logos everywhere, 🧹 hide spam tokens |
 | 💱 | **Any currency** — display in USD, EUR, GBP, JPY, RUB and more |
 | 🔗 | **Share** — a read-only link to a portfolio (addresses only, no keys) |
-| ⬇️ | **CSV export**, sort, hide-dust, multi-wallet |
+| ⬇️ | **CSV export**, search, sort, hide-dust, multi-wallet |
 
 ### Chains
 
@@ -63,7 +67,8 @@ explorers and price APIs to display balances:
 
 - **Balances & history** — [Blockscout](https://blockscout.com) (EVM), public Solana RPC, and
   [Blockstream esplora](https://blockstream.info) (Bitcoin)
-- **Prices** — [DefiLlama](https://defillama.com); **FX rates** — open.er-api.com;
+- **Prices** — [DefiLlama](https://defillama.com), falling back to the block explorer's
+  own market rate for long-tail tokens DefiLlama doesn't list; **FX rates** — open.er-api.com;
   **ENS** — ensideas
 
 Your wallet addresses are **never** transmitted to any Coldview-operated server (there isn't
@@ -73,7 +78,7 @@ one). Wallets, alerts, hidden tokens and your currency choice are stored only in
 
 React 19 · TypeScript · Vite · Tailwind CSS · Zustand · TanStack Query · Recharts ·
 idb-keyval · vite-plugin-pwa. Tested with Vitest + Testing Library and Playwright
-(141 unit + 5 end-to-end tests).
+(174 unit + 5 end-to-end tests).
 
 ## Develop
 
