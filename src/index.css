@@ -36,6 +36,28 @@
   --danger: 220 38 38;
 }
 
+/* Shimmering placeholder used by loading skeletons. Themed via --panel/--border
+   so it works in both light and dark. */
+@keyframes coldview-shimmer {
+  100% { transform: translateX(100%); }
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: rgb(var(--panel));
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(90deg, transparent, rgb(var(--border) / 0.65), transparent);
+  animation: coldview-shimmer 1.4s infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after { animation: none; }
+}
+
 body {
   margin: 0;
   background-color: rgb(var(--bg));

@@ -17,5 +17,5 @@ export function PrivacyNote() {
 }
 
 export function LoadingSkeleton() {
-  return <div className="animate-pulse h-24 bg-panel border border-border rounded-[10px]" aria-label="loading" />;
+  return <div className="skeleton h-24 border border-border rounded-[10px]" role="status" aria-label="loading" />;
 }

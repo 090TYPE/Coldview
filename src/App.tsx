@@ -15,6 +15,7 @@ import { HoldingsPanel } from './components/HoldingsPanel';
 import { EmptyState } from './components/EmptyState';
 import { ErrorBanner } from './components/ErrorBanner';
 import { ActivityView } from './components/ActivityView';
+import { PortfolioSkeleton } from './components/PortfolioSkeleton';
 import { RefreshControl } from './components/RefreshControl';
 import { NftView } from './components/NftView';
 import { PnlView } from './components/PnlView';
@@ -96,7 +97,7 @@ export default function App() {
         <AlertsView holdings={data?.holdings ?? []} />
       ) : (
         <>
-          {isLoading && <LoadingSkeleton />}
+          {isLoading && <PortfolioSkeleton />}
           {isError && !isLoading && (
             <ErrorBanner message="Couldn't load your portfolio right now — it'll retry automatically." />
           )}
