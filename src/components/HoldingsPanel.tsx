@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { HoldingsTable } from './HoldingsTable';
 import { holdingsToCsv } from '../data/holdingsCsv';
 import { useAppStore } from '../state/store';
+import { getChain } from '../config/chains';
 import type { Holding, TokenKey } from '../data/types';
 
 type Sort = 'value' | 'name';
@@ -20,6 +21,7 @@ export function HoldingsPanel({ holdings, sparklines }: { holdings: Holding[]; s
   const [hideDust, setHideDust] = useState(false);
   const [sort, setSort] = useState<Sort>('value');
   const [showHidden, setShowHidden] = useState(false);
+  const [query, setQuery] = useState('');
   const { hiddenKeys, hideToken, unhideToken } = useAppStore();
 
   const hidden = useMemo(() => new Set(hiddenKeys), [hiddenKeys]);
@@ -27,17 +29,27 @@ export function HoldingsPanel({ holdings, sparklines }: { holdings: Holding[]; s
   const rows = useMemo(() => {
     let r = holdings.filter((h) => !hidden.has(h.key));
     if (hideDust) r = r.filter((h) => (h.valueUsd ?? 0) >= 1);
+    const q = query.trim().toLowerCase();
+    if (q) r = r.filter((h) => h.symbol.toLowerCase().includes(q) || getChain(h.chainId).name.toLowerCase().includes(q));
     r = [...r].sort((a, b) =>
       sort === 'name' ? a.symbol.localeCompare(b.symbol) : (b.valueUsd ?? 0) - (a.valueUsd ?? 0),
     );
     return r;
-  }, [holdings, hidden, hideDust, sort]);
+  }, [holdings, hidden, hideDust, sort, query]);
 
   const hiddenRows = useMemo(() => holdings.filter((h) => hidden.has(h.key)), [holdings, hidden]);
 
   return (
     <div>
       <div className="flex items-center gap-3 mb-2 flex-wrap text-[12px]">
+        <input
+          type="search"
+          aria-label="Search holdings"
+          placeholder="Search…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="bg-panel border border-border rounded px-2 py-0.5 text-text outline-none focus:border-neon w-32"
+        />
         <label className="flex items-center gap-1.5 text-muted cursor-pointer">
           <input type="checkbox" aria-label="Hide dust" checked={hideDust} onChange={(e) => setHideDust(e.target.checked)} />
           Hide dust (&lt; $1)

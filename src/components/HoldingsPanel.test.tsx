@@ -23,6 +23,13 @@ describe('HoldingsPanel', () => {
     expect(screen.getByText('BIG')).toBeInTheDocument();
   });
 
+  it('filters holdings by the search query (symbol)', async () => {
+    render(<HoldingsPanel holdings={[h({ key: 'a', symbol: 'ETH' }), h({ key: 'b', symbol: 'USDC' })]} />);
+    await userEvent.type(screen.getByRole('searchbox', { name: /search/i }), 'usd');
+    expect(screen.queryByText('ETH')).not.toBeInTheDocument();
+    expect(screen.getByText('USDC')).toBeInTheDocument();
+  });
+
   it('has an Export CSV button', () => {
     render(<HoldingsPanel holdings={[h({})]} />);
     expect(screen.getByRole('button', { name: /export csv/i })).toBeInTheDocument();
