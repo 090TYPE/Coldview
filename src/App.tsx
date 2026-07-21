@@ -15,6 +15,7 @@ import { HoldingsPanel } from './components/HoldingsPanel';
 import { EmptyState } from './components/EmptyState';
 import { ErrorBanner } from './components/ErrorBanner';
 import { ActivityView } from './components/ActivityView';
+import { RefreshControl } from './components/RefreshControl';
 import { NftView } from './components/NftView';
 import { PnlView } from './components/PnlView';
 import { AlertsView } from './components/AlertsView';
@@ -32,7 +33,7 @@ export default function App() {
   const enabledChains = shared ? shared.chains : store.enabledChains;
   const { period, byokKey, view } = store;
 
-  const { data, isLoading, isError } = usePortfolio(wallets, enabledChains, !readOnly);
+  const { data, isLoading, isError, isFetching, dataUpdatedAt, refetch } = usePortfolio(wallets, enabledChains, !readOnly);
   const ensByAddress = useEnsNames(wallets.map((w) => w.address));
   const sparklines = useSparklines(data?.holdings ?? []);
   useAlertNotifier(data?.holdings ?? []);
@@ -76,7 +77,14 @@ export default function App() {
           You're viewing a <span className="text-blue">shared, read-only</span> portfolio. Data is fetched live on your device; nothing is saved.
         </div>
       )}
-      {!readOnly && <ChainFilter enabled={enabledChains} onToggle={store.toggleChain} />}
+      {!readOnly && (
+        <div className="flex items-start justify-between gap-3">
+          <ChainFilter enabled={enabledChains} onToggle={store.toggleChain} />
+          {view === 'portfolio' && (
+            <RefreshControl updatedAt={dataUpdatedAt} isFetching={isFetching} onRefresh={() => refetch()} />
+          )}
+        </div>
+      )}
 
       {view === 'activity' ? (
         <ActivityView wallets={wallets} enabledChains={enabledChains} />
