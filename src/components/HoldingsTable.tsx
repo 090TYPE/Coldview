@@ -11,9 +11,10 @@ interface TableProps {
   sparklines?: Record<TokenKey, number[]>;
   onHide?: (key: TokenKey) => void;   // renders a per-row hide/unhide action
   hiddenMode?: boolean;               // true when listing already-hidden tokens (show ↺ restore)
+  onSelect?: (h: Holding) => void;    // clicking a token opens its detail view
 }
 
-export function HoldingsTable({ holdings, sparklines, onHide, hiddenMode }: TableProps) {
+export function HoldingsTable({ holdings, sparklines, onHide, hiddenMode, onSelect }: TableProps) {
   const money = useMoney();
   return (
     <div className="bg-panel border border-border rounded-[10px] overflow-x-auto">
@@ -34,10 +35,17 @@ export function HoldingsTable({ holdings, sparklines, onHide, hiddenMode }: Tabl
           {holdings.map((h) => (
             <tr key={h.key}>
               <td className="p-2.5 border-b border-[#0f171e] font-bold text-[#e6eef3]">
-                <div className="flex items-center gap-2">
-                  <TokenIcon iconUrl={h.iconUrl} symbol={h.symbol} />
-                  <span>{h.symbol}</span>
-                </div>
+                {onSelect ? (
+                  <button className="flex items-center gap-2 hover:text-neon" onClick={() => onSelect(h)} title={`${h.symbol} details`}>
+                    <TokenIcon iconUrl={h.iconUrl} symbol={h.symbol} />
+                    <span>{h.symbol}</span>
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <TokenIcon iconUrl={h.iconUrl} symbol={h.symbol} />
+                    <span>{h.symbol}</span>
+                  </div>
+                )}
               </td>
               <td className="p-2.5 border-b border-[#0f171e]">
                 <span className="text-[9px] px-1.5 py-0.5 rounded border border-border text-[#8ba0ad]">

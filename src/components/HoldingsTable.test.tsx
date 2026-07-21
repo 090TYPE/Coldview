@@ -1,5 +1,6 @@
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { HoldingsTable } from './HoldingsTable';
 import { useAppStore } from '../state/store';
 import type { Holding } from '../data/types';
@@ -28,6 +29,13 @@ describe('HoldingsTable', () => {
   it('shows negative change with the danger indicator', () => {
     render(<HoldingsTable holdings={holdings} />);
     expect(screen.getByText(/1.4%/)).toBeInTheDocument();
+  });
+
+  it('calls onSelect when a token is clicked', async () => {
+    const onSelect = vi.fn();
+    render(<HoldingsTable holdings={holdings} onSelect={onSelect} />);
+    await userEvent.click(screen.getByTitle('ETH details'));
+    expect(onSelect).toHaveBeenCalledWith(holdings[0]);
   });
 
   it('converts values to the selected display currency', () => {

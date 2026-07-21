@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { HoldingsTable } from './HoldingsTable';
+import { TokenDetail } from './TokenDetail';
 import { holdingsToCsv } from '../data/holdingsCsv';
 import { useAppStore } from '../state/store';
 import { getChain } from '../config/chains';
@@ -22,6 +23,7 @@ export function HoldingsPanel({ holdings, sparklines }: { holdings: Holding[]; s
   const [sort, setSort] = useState<Sort>('value');
   const [showHidden, setShowHidden] = useState(false);
   const [query, setQuery] = useState('');
+  const [selected, setSelected] = useState<Holding | null>(null);
   const { hiddenKeys, hideToken, unhideToken } = useAppStore();
 
   const hidden = useMemo(() => new Set(hiddenKeys), [hiddenKeys]);
@@ -74,12 +76,15 @@ export function HoldingsPanel({ holdings, sparklines }: { holdings: Holding[]; s
           Export CSV
         </button>
       </div>
-      <HoldingsTable holdings={rows} sparklines={sparklines} onHide={hideToken} />
+      <HoldingsTable holdings={rows} sparklines={sparklines} onHide={hideToken} onSelect={setSelected} />
       {showHidden && hiddenRows.length > 0 && (
         <div className="mt-3">
           <div className="text-muted text-[10px] uppercase tracking-widest mb-1.5">Hidden tokens</div>
           <HoldingsTable holdings={hiddenRows} sparklines={sparklines} onHide={unhideToken} hiddenMode />
         </div>
+      )}
+      {selected && (
+        <TokenDetail holding={selected} sparkline={sparklines?.[selected.key]} onClose={() => setSelected(null)} />
       )}
     </div>
   );
